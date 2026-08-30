@@ -1,3 +1,4 @@
 langchain_google_genai
 langchain
 load_dotenv
+langchain_core
