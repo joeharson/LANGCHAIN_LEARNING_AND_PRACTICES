@@ -1,4 +1,15 @@
 langchain_google_genai
+langchain-groq
 langchain
 load_dotenv
 langchain_core
+langchain-huggingface
+langchain-community
+sentence-transformers
+fastapi
+uvicorn[standard]
+
+jupyter
+ipykernel
+
+faiss-cpu

@@ -1,0 +1,374 @@
+# RAG CHUNK 001
+
+**Unique ID:** `vijay-actor-001`
+**Title/Summary:** Vijay (actor) — Redirect, naming note, and full name
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Vijay (actor)`, `Joseph Vijay`, `C. Joseph Vijay`, `Chandrasekaran`, `Tamil name`, `patronym`
+
+---
+
+VIJAY (ACTOR)
+
+REDIRECT / NAMING NOTE
+“Vijay (actor)” redirects here. For other people named Vijay, see Vijay (name).
+
+In this Tamil name, there is no surname or family name. The name Chandrasekaran is a patronym, and the person should be referred to by their given name, Joseph Vijay.
+
+FULL NAME
+C. Joseph Vijay
+
+CAPTION
+Vijay in 2026
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 002
+
+**Unique ID:** `vijay-actor-002`
+**Title/Summary:** Vijay — Political offices and current political positions
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Chief Minister of Tamil Nadu`, `Tamil Nadu`, `Tamilaga Vettri Kazhagam`, `TVK`, `Tamil Nadu Legislative Assembly`, `Perambur`, `Rajendra Arlekar`, `N. Anand`
+
+---
+
+POLITICAL OFFICES
+
+9th Chief Minister of Tamil Nadu
+Status: Incumbent
+Assumed office: 10 May 2026
+Governor: Rajendra Arlekar (additional charge)
+Preceded by: M. K. Stalin
+Additional ministries
+
+Member of the Tamil Nadu Legislative Assembly
+Status: Incumbent
+Assumed office: 4 May 2026
+Preceded by: R. D. Shekar
+Constituency: Perambur
+
+President of the Tamilaga Vettri Kazhagam
+Status: Incumbent
+Assumed office: 2 February 2024
+General Secretary: N. Anand
+Preceded by: Office established
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 003
+
+**Unique ID:** `vijay-actor-003`
+**Title/Summary:** Vijay — Personal details, family, education, occupation, and awards
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Chandrasekaran Joseph Vijay`, `birth`, `Madras`, `Sangeetha Sornalingam`, `children`, `parents`, `Loyola College`, `Tamilaga Vettri Kazhagam`
+
+---
+
+PERSONAL DETAILS
+
+Born: Chandrasekaran Joseph Vijay
+Date of birth: 22 June 1974 (age 52)
+Place of birth: Madras, India
+Party: Tamilaga Vettri Kazhagam
+Spouse: Sangeetha Sornalingam (m. 1999)
+Children: 2
+Parents:
+- S. A. Chandrasekhar (father)
+- Shoba Chandrasekhar (mother)
+Relatives: Chandrasekhar family
+Education: Loyola College, Madras (dropped out)
+Occupation: Politician; actor
+Awards: Full list
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 004
+
+**Unique ID:** `vijay-actor-004`
+**Title/Summary:** Vijay — Biography, acting career, philanthropy, political entry, and 2026 government formation
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay biography`, `Tamil cinema`, `actor`, `politician`, `Vijay Makkal Iyakkam`, `VMI`, `Tamilaga Vettri Kazhagam`, `TVK`, `2026 Tamil Nadu Legislative Assembly election`, `Chief Minister`
+
+---
+
+BIOGRAPHY
+
+Chandrasekaran Joseph Vijay (born 22 June 1974) is an Indian politician and former actor who is currently serving as the ninth chief minister of Tamil Nadu since May 2026. He is the founder and president of the political party Tamilaga Vettri Kazhagam (TVK). Prior to entering politics, he was a leading actor in Tamil cinema and among the highest-paid actors in India, having won numerous accolades including multiple Tamil Nadu State Film Awards and South Indian International Movie Awards.
+
+Following a stint as a child actor in the 1980s, Vijay made his debut as a leading man in Naalaiya Theerpu (1992), directed by his father S. A. Chandrasekhar. He rose to fame with romance films such as Poove Unakkaga (1996), Love Today (1997), Kadhalukku Mariyadhai (1997), Thullatha Manamum Thullum (1999), Kushi (2000), Priyamaanavale (2000), Friends (2001) before transitioning into an action star with Thirumalai (2003), Ghilli (2004), Madhurey (2004), Thirupaachi (2005) and Pokkiri (2007). From the 2010s onward, he starred in major commercial successes including Thuppakki (2012), Kaththi (2014), Theri (2016), Mersal (2017), Sarkar (2018), Bigil (2019), Master (2021), Leo (2023) and The Greatest of All Time (2024) which rank among the highest-grossing Tamil films.
+
+Beyond his film career, Vijay cultivated a fan following, which he consolidated into the social welfare organisation Vijay Makkal Iyakkam (VMI) in 2009. Through VMI, he engaged in extensive philanthropic activities across Tamil Nadu. In many of his later films, such as Kaththi and Sarkar, he cultivated the image of an angry protagonist fighting against corruption, injustice, and social inequality, which frequently brought him into conflict with the state's ruling political establishment.[1]
+
+In February 2024, Vijay announced his retirement from cinema and his formal entry into politics. He launched the TVK, a secular and egalitarian party but an alternative to the established Dravidian parties. In a watershed moment for Tamil Nadu politics, the TVK secured 108 seats in the 2026 Tamil Nadu Legislative Assembly election, emerging as the single-largest party and breaking the half-century-long bureaucratic duopoly of the DMK and the AIADMK.[2][3] With the support of several smaller allied parties, Vijay was sworn in as chief minister on 10 May 2026.
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 005
+
+**Unique ID:** `vijay-actor-005`
+**Title/Summary:** Vijay — Early life, family background, schooling, and education
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `early life`, `Chandrasekaran Joseph Vijay`, `Madras`, `S. A. Chandrasekhar`, `Shoba`, `Vidhya`, `Fathima school`, `Balalok school`, `Loyola College`
+
+---
+
+EARLY LIFE
+
+Chandrasekaran Joseph Vijay was born on 22 June 1974 in Madras.[4][5] His father, Chandrasekaran, is a film director and his mother, Shoba, is a playback singer and vocalist.[6] His father is a lapsed Catholic and his mother is an adherent of Hinduism.[7][8] Vijay had a sister, Vidhya, who died when she was two years old.[9] Vijay did his schooling initially at Fathima school, Kodambakkam and later at Balalok school, Virugambakkam.[10][11] He pursued a bachelor's degree in visual communication from Loyola College, but dropped out early to focus on his acting career.[12][13][14]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 006
+
+**Unique ID:** `vijay-actor-006`
+**Title/Summary:** Vijay — Film career, 1984–2002: debut and transition to lead roles
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `film career`, `1984`, `2002`, `child actor`, `Naalaiya Theerpu`, `Senthoorapandi`, `Rasigan`, `Ilaya Thalapathy`, `Poove Unakkaga`, `Kadhalukku Mariyadhai`, `Thullatha Manamum Thullum`, `Kushi`, `Friends`
+
+---
+
+FILM CAREER
+
+See also: Vijay filmography
+
+1984–2002: DEBUT AND TRANSITION TO LEAD ROLES
+
+Vijay made his debut as a child actor in the Tamil film Vetri, produced by P. S. Veerappa in 1984.[15] He then performed in Kudumbam (1984), Naan Sigappu Manithan (1985), Vasantha Raagam (1986), Sattam Oru Vilayaattu (1987) and Ithu Engal Neethi (1988), which were all directed by his father.
+
+Vijay played the lead role for the first time in Naalaiya Theerpu at the age of 18 in 1992.[16] The film failed at the box office, with Vijay receiving bitter criticism for his looks and performance. Chandrasekhar decided then to cast him alongside an established hero Vijayakanth, who agreed to the project in Senthoorapandi (1993). The film was a hit, boosting Vijay's popularity with the masses.[17] In 1994, Rasigan directed again by his father, Vijay became popular as “Ilaya Thalapathy” (Young Commander).[18] He also made his debut as a singer.[19] In 1995, the romantic action Deva, was a box office hit and completed the 100-day run in cinema halls.[20] Vijay took leading roles in films such as Rajavin Parvaiyile, in which he co-starred with actor Ajith Kumar,[21] followed by Vishnu and the romantic drama Chandralekha.[22][23]
+
+In early 1996, the romantic comedy film Coimbatore Mappillai was a hit at the box office.[24] This was followed by Poove Unakkaga, directed by Vikraman, which according to him, gave him his initial break and popularity.[25] His subsequent films that year were Vasantha Vaasal, Maanbumigu Maanavan and Selvaa. In 1997, Vijay appeared in Kaalamellam Kaathiruppen, Love Today and Once More, and in the latter he shared the screen with veteran actor Sivaji Ganesan.[26][27] In Nerrukku Ner, he starred with actor Suriya's marked debut in the industry.[28] Then, Vijay attracted the family audience through Fazil's Kadhalukku Mariyadhai.[29] This film earned actor Vijay his first Tamil Nadu State Film Award for Best Actor.[30] He was awarded Kalaimaamani by the Government of Tamil Nadu for his role.[31] In 1998, he continued to star in romantic films such as Ninaithen Vandhai, Priyamudan and Nilaave Vaa. In 1999, the romantic drama Thullatha Manamum Thullum was a blockbuster success and helped Vijay create a fan base in Kerala.[32][33] Vijay won the MGR Honorary Award and Tamil Nadu State Film Award for Best Film (second prize). The next released was Endrendrum Kadhal, Nenjinile, and Minsara Kanna.[34] In 2000, he appeared in his 25th film, Kannukkul Nilavu, alongside commercially successful romantic films, Kushi and Priyamaanavale.[35] In 2001, his box office successes included Friends, Badri and Shahjahan, and in 2002, he starred in the action film Thamizhan alongside Priyanka Chopra.[36] Later, he appeared in the romantic film Youth and the action film Bagavathi in the same year.[37]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 007
+
+**Unique ID:** `vijay-actor-007`
+**Title/Summary:** Vijay — Film career, 2003–2011: established actor and transition to action hero
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `film career`, `2003`, `2011`, `Thirumalai`, `Ghilli`, `Madhurey`, `Thirupaachi`, `Pokkiri`, `Azhagiya Tamil Magan`, `Kaavalan`, `Velayudham`
+
+---
+
+2003–2011: ESTABLISHED ACTOR
+
+Vijay began 2003 with Vaseegara and Pudhiya Geethai.[38] The success of his masala film Thirumalai changed his on-screen persona into an action hero. Until then, the actor had been performing in roles that were charming and comedic. Thirumalai was considered a turning point in Vijay's career.[39] In 2004, after several delays, the film Udhaya was released.[40] Then, Vijay appeared in Ghilli, directed by S. Dharani, alongside Trisha and Prakash Raj.[41] The movie was a commercial success, became the first Tamil film to gross over ₹500 million at the domestic box office, and also broke the record—previously held by M. G. Ramachandran's Adimai Penn (1969)—for the most people watching the movie within the first week of its release.[42][43][44] Following this, he performed in Madhurey.[45] Next, Vijay starred in Perarasu's 2005 blockbuster and directorial debut film Thirupaachi.[46] Then, Vijay had an extended cameo as a lawyer in the action film Sukran (2005).[47][48] Later, he starred in the commercially successful films Sachein (2005) and Sivakasi (2005).[45] Then, he starred in Aathi (2006). The film was an average grosser at the box office and it was a 2005 Telugu remake of Athanokkade.[49] In 2007, the action thriller Pokkiri directed by Prabhu Deva, became one of the highest-grossing films of his career at the time.[50]
+
+Vijay starred in the romantic thriller film Azhagiya Tamil Magan, where he portrayed a dual role for the first time in his career. He played the roles of both protagonist and antagonist.[51] The film was commercially successful outside India.[52][53] In 2008, the action comedy Kuruvi was released.[54][55] In 2009, Villu and Vettaikaaran were average successes at domestic box office while continuing to be more successful overseas.[56][57][58] Vijay continued to be one of the highest paid actors despite the moderate success of then recently released movies.[59] In 2010, he acted in the action film Sura, which was his 50th film as an actor.[60][61] Vijay starred in the romantic comedy Kaavalan (2011), directed by Siddique which received positive response and a box office collection of ₹102 crore worldwide.[62][63] The film was screened at the Shanghai International Film Festival in China.[64] Kaavalan was a commercial success in China.[65] His next film was the action film Velayudham, directed by M. Raja which released during Diwali and became one of the top-grossing films of 2011.[42]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 008
+
+**Unique ID:** `vijay-actor-008`
+**Title/Summary:** Vijay — Film career, 2012–2022: commercial success and stardom
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `2012`, `2022`, `Nanban`, `Thuppakki`, `Thalaivaa`, `Kaththi`, `Puli`, `Theri`, `Mersal`, `Sarkar`, `Bigil`, `Master`, `Beast`, `commercial success`, `stardom`
+
+---
+
+2012–2022: Commercial Success and Stardom
+
+Vijay (seated far right) at the Consulate General of the United States, Chennai in 2013
+
+In 2012, Vijay starred in the commercially successful Nanban, a remake of successful Hindi film 3 Idiots.[66][67] Later, he acted in the action thriller Thuppakki, directed by A. R. Murugadoss.[68] The film became the third Tamil film to gross more than ₹100 crore domestically and became the most successful film of Vijay's career at the time, grossing over ₹121 crore.[69] His next film Thalaivaa, directed by A. L. Vijay, was released in August 2013 to mixed reviews.[70][42] In 2014, he acted in Jilla which ended up as a box office hit.[71][72] Vijay then starred in the action thriller Kaththi, where he portrayed another dual role. The film received positive reviews and collected ₹130 crore at the box office, becoming one of the highest-grossing Tamil films in 2014.[73]
+
+In 2015, he starred in the fantasy film Puli, directed by Chimbu Deven, which received mixed to poor reviews from critics.[74][75] Despite the reviews, the film was one of the highest-grossing films of 2015.[76][77][78] In April 2016, the action-thriller Theri directed by Atlee released to mixed reviews.[79] It became the second-highest-grossing Tamil film of 2016, grossing over ₹150 crore.[80] In 2017, the masala film Bairavaa was released, again to mixed reviews.[81] In 2017, the action thriller Mersal released, which became a commercial success, becoming the first of Vijay's films to gross over ₹250 crore.[73][82] The film won the Best Foreign Language Film award at the National Film Awards UK in 2018 with Vijay earning a nomination for the best supporting actor.[83] The film was amongst the few films of Vijay to be released in Japan and China with further screening at the Bucheon International Fantastic Film Festival in South Korea.[84][85][86]
+
+In 2018, Vijay acted in the political film Sarkar, which entered the 100 Crore Club within two days.[87] The film was released in 80 countries and became his second ever film to gross over ₹250 crore.[88][89][90] Vijay acted in a football action film Bigil, which released in 2019.[91] While the film received mixed reviews from critics, Vijay was praised for the portrayal of his character and the film was a commercial success, earning more than ₹300 crore.[92][93] It was also the first Tamil film to be released in Egypt and Jordan.[94] In 2021, his next film Master, directed by Lokesh Kanagaraj was released.[95][96] Upon release, it received mixed to positive reviews from the critics.[97][98] The film collected over ₹300 crore worldwide and was declared a box office success.[99] His next film was the dark comedy action film Beast, which received mixed reviews from critics.[100][101][102] The film performed well in overseas box office and was commercially successful, collecting more than ₹300 crore worldwide.[103][104][105][106] It became one of the most viewed films on Netflix globally in 2022.[107][108]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 009
+
+**Unique ID:** `vijay-actor-009`
+**Title/Summary:** Vijay — Film career, 2023–2026: continued success and Jana Nayagan
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `2023`, `2024`, `2026`, `Varisu`, `Leo`, `The Greatest of All Time`, `Jana Nayagan`, `film career`, `retirement from cinema`, `Tamil cinema`
+
+---
+
+2023–2026: Continued Success
+
+Vijay with Pooja Hegde at the muhurat puja of his final film Jana Nayagan
+
+In 2023, Vijay was seen in the action drama film Varisu directed by Vamshi Paidipally.[109][110] The film was a commercial success, grossing over ₹300 crore at the box office.[111][112] His next release of 2023 was the action thriller Leo.[113][114] It received mixed reviews from critics, but went on to become a commercially successful film and emerged as one of the highest grossing Indian films of the year with a gross more than ₹600 crore.[115][116] His action thriller film The Greatest of All Time opened to mixed reviews, but had a theatrical revenue of more than ₹450 crore.[117][118][119] In February 2024, Vijay announced that he would do only one more film, later titled Jana Nayagan.[120][121][122] The film is reportedly inspired by the Telugu film Bhagavanth Kesari.[123] The film was scheduled for release on 9 January 2026, but was delayed due to censorship issues. It was subsequently leaked on piracy websites on 9 April 2026, prior to its official theatrical release.[124] Ultimately, Jana Nayagan (2026) opened in theatres on 23 July.[125] Jana Nayagan saw a bumper opening despite mixed reviews, as fans thronged theatres to catch Vijay "one last time" on the big screen.[126]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 010
+
+**Unique ID:** `vijay-actor-010`
+**Title/Summary:** Vijay — Music career and playback singing
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Music Career`, `playback singer`, `Ilaiyaraaja`, `A. R. Rahman`, `Bombay City Sukkha Rotti`, `Rasigan`, `Vaadi Vaadi`, `Sachein`, `Google Google`, `Thuppakki`, `Vijay Awards`, `SIIMA`, `Filmfare Award South`
+
+---
+
+Music Career
+
+Main article: List of songs recorded by Vijay
+
+Vijay is considered as one of the most prolific singers among Tamil actors.[127][128] He has sung for various composers including Ilaiyaraaja, and A. R. Rahman.[129][130] He made his singing debut with the song "Bombay City Sukkha Rotti" in Rasigan (1994). After recording his 25th song, "Vaadi Vaadi" in Sachein (2005), he took a sabbatical from singing to concentrate on acting. He made a comeback with the track "Google Google" in Thuppakki (2012), which earned him the award for the favourite song of the year at the Vijay Awards,[131] and a nomination for the best play back singer in the South Indian International Movie Awards.[132] In 2015, he was nominated for the Best Playback Singer award in the Filmfare Award South for the song "Yaendi Yaendi".[133] The following year, he was nominated again in the same category for his performance in the song "Selfie Pulla".[134]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 011
+
+**Unique ID:** `vijay-actor-011`
+**Title/Summary:** Vijay — Political career, fan organization, TVK formation, and political developments from 2009–2026
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Political Career`, `Vijay Makkal Iyakkam`, `VMI`, `AIADMK`, `Citizenship Amendment Act 2019`, `Tamil Nadu local elections`, `Tamilaga Vettri Kazhagam`, `TVK`, `CBI`, `Karur`, `NDTV`, `M. G. Ramachandran`, `J. Jayalalithaa`, `M. Karunanidhi`
+
+---
+
+Political Career
+
+In 2009, Vijay launched his fan club Vijay Makkal Iyakkam.[135][136] The organisation supported the AIADMK-led alliance in the 2011 Tamil Nadu assembly elections.[137] In February 2019, Vijay voiced his opinion against the Citizenship Amendment Act 2019 passed by the central government, saying that it would disrupt the social religious harmony of the nation.[138]
+
+Members of his fan club contested in the 2022 Tamil Nadu local elections, securing victory in 115 seats.[139] On 2 February 2024, Vijay announced the launch of his political party Tamilaga Vettri Kazhagam (TVK).[140][141]
+
+On 27 September 2025, 41 people died in a crowd crush during a political rally addressed by Vijay in Karur.[142] He condoled the deaths and later announced ex-gratia payments to the next of kin of the dead and the injured.[143] In October 2025, the Supreme Court transferred this case to Central Bureau of Investigation (CBI), though the Tamil Nadu Government urged the Supreme Court to vacate its order.[144][145] In January 2026, Vijay was questioned twice by the CBI at their Delhi headquarters on 12 and 19 January, about the incidence, including his delayed arrival to the rally and his decision to leave early after the situation worsened.[146][147][148]
+
+He was questioned for the third time in March 2026, again at CBI Headquarters at Delhi.[149][150]
+
+On 30 January 2026, Vijay stated that his role models include M. G. Ramachandran, J. Jayalalithaa and M. Karunanidhi, in his first interview with the national media outlet NDTV since entering politics.[151]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 012
+
+**Unique ID:** `vijay-actor-012`
+**Title/Summary:** Vijay — Chief Minister of Tamil Nadu, 2026–Present: election, government formation, and coalition
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Chief Minister of Tamil Nadu`, `2026`, `Tamilaga Vettri Kazhagam`, `TVK`, `Tamil Nadu Legislative Assembly election`, `Perambur`, `Trichy East`, `Congress`, `VCK`, `CPI`, `CPI(M)`, `IUML`, `DMK`, `SPA`, `Narendra Modi`
+
+---
+
+Chief Minister of Tamil Nadu (2026–Present)
+
+Further information: C. Joseph Vijay ministry
+
+Vijay with Prime Minister Narendra Modi in New Delhi
+
+The Vijay-led TVK made its debut appearance in the 2026 Tamil Nadu Legislative Assembly election. The party emerged as the single largest party in the assembly, marking a significant change in Tamil Nadu's political landscape, which had long been dominated by Dravidian parties. Vijay contested from two constituencies, Perambur and Trichy East and was elected from both. He later resigned from the Trichy East seat, choosing to retain the Perambur constituency.[152] Vijay became the first Chief Minister of Tamil Nadu since Jayalalithaa in 1991 to contest and win from two constituencies, later vacating one of the seats.[153]
+
+On 6 May 2026, Vijay met the Governor and submitted a formal claim to form the government, asserting that TVK possessed the requisite majority. However, the Governor was not satisfied with the party's majority claims and did not extend an invitation to Vijay to form the government on 7 May 2026. This development raises questions around the verification of legislative support, gubernatorial discretion, and adherence to established constitutional conventions in government formation.[154]
+
+On 10 May 2026, Vijay was sworn in as the ninth Chief Minister of Tamil Nadu, putting an end to six decades of dominance of the Dravidian parties in the state. The government is being formed as a coalition government with Congress as a partner, while the parties including VCK, CPI, CPI(M), IUML extending outside support to TVK, while continuing their alliance with the DMK-led SPA.[155][156] Shortly thereafter, the VCK and IUML formally withdrew from the DMK front and joined the Cabinet as part of TVK-led coalition government. The Left parties subsequently declared that they were no longer part of the DMK alliance.[157]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 013
+
+**Unique ID:** `vijay-actor-013`
+**Title/Summary:** Vijay — Personal life, marriage, relationships, children, friendships, and family connections
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Personal Life`, `Marriage`, `Relationships`, `Friendships`, `Sankgeetha Sornalingam`, `Jason Sanjay`, `Dhivya Sasha`, `Trisha Krishnan`, `Sanjeev Venkat`, `Sriman`, `Srinath`, `S. N. Surendar`, `Vikranth`, `Udhayanidhi Stalin`
+
+---
+
+PERSONAL LIFE
+
+Marriage, Relationships, and Friendships
+
+Vijay married Sankgeetha Sornalingam, a Sri Lankan-born British Tamil who was born to an affluent business family, on 25 August 1999.[158][159] Their marriage was arranged after Sankgeetha met Vijay as a fan on the sets of Kaalamellam Kaathiruppen (1997) and their families became acquainted. They have two children: a son (Jason Sanjay) and a daughter (Dhivya Sasha).[160][161] Jason Sanjay is an upcoming film director who will be making his debut in the film Sigma and previously appeared in the film Vettaikkaaran alongside his father, while Dhivya Sasha also appeared alongside her father in the film Theri.[162][163][161][164]
+
+In 2025, Sankgeetha filed for divorce.[165][166][14] In 2026, she filed a petition alleging that Vijay had denied her entry to their matrimonial home and committed infidelity with an unnamed actress.[167][168][169] The petition attracted media attention after Vijay appeared at an event with actress Trisha Krishnan.[168][170][171] In August 2026, Sankgeetha withdrew the divorce plea.[172]
+
+Supporting actors Sanjeev Venkat, Sriman, and Srinath have been close friends with Vijay since college and have appeared in several of his films. Playback singer S. N. Surendar is a maternal uncle of Vijay, while actor and cricketer Vikranth is one of Vijay's cousins, though the latter has never collaborated in any films together with Vijay. Tamil Nadu former deputy chief minister Udhayanidhi Stalin, who produced Vijay's film Kuruvi, described Vijay as "a close friend" since childhood.[173] The two would eventually become political rivals during the 2026 Tamil Nadu legislative assembly elections, which resulted in Vijay becoming chief minister of Tamil Nadu while Udhayanidhi became leader of opposition.
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 014
+
+**Unique ID:** `vijay-actor-014`
+**Title/Summary:** Vijay — Wealth, earnings, salaries, and net worth
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `wealth`, `earnings`, `net worth`, `salary`, `Beast`, `Varisu`, `The Greatest Of All Time`, `highest-paid actors`, `Tamil cinema`
+
+---
+
+WEALTH AND EARNINGS
+
+Vijay is among the highest-paid actors in Tamil cinema.[174][175] As of March 2026, Vijay's net worth was above ₹6.25 billion (US$65 million).[176] He earned a ₹1 billion (US$10 million) salary for Beast and also earned an estimated ₹1.2 billion (US$12 million) to ₹1.5 billion (US$16 million) salary for Varisu.[177][178] In 2023, he reportedly received a ₹2 billion (US$21 million) salary for The Greatest Of All Time, becoming one of the top-paid actors in India.[179]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 015
+
+**Unique ID:** `vijay-actor-015`
+**Title/Summary:** Vijay — Tax litigation, Income Tax Department searches, penalty, and Rolls-Royce Ghost entry tax case
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Tax Litigation`, `Income Tax Department`, `₹15 crore`, `₹1.5 crore`, `Section 271AAB(1)`, `Income Tax Act`, `Madras High Court`, `Puli`, `Rolls-Royce Ghost`, `Entry Tax`, `tax evasion`
+
+---
+
+TAX LITIGATION
+
+In 2015, the Income Tax Department conducted a search at actor Vijay's premises, leading to the disclosure of an additional ₹15 crore in income for the financial year 2015–16, including the payments related to the movie Puli. Although Vijay paid tax on the disclosed amount, the department later imposed a penalty of ₹1.5 crore under Section 271AAB(1) of the Income Tax Act, stating the disclosure was made only after the search. Vijay challenged the penalty before the Madras High Court in 2022, arguing that the penalty proceedings were time-barred. The Income Tax Department opposed the petition, maintaining the penalty was valid. As of 2025, the matter remains pending, with interim protection granted against recovery of the penalty.[180][181][182]
+
+On 5 February 2020, the Income Tax Department raided Vijay's residence in Chennai over potential tax evasion and his investments in immovable properties.[183][184] Later, the officials stated that nothing significant was found during the raid.[185] On 13 July 2021, the Madras High Court dismissed a writ petition filed by Vijay in 2012 seeking exemption of the Entry Tax for his Rolls-Royce Ghost car that was imported from the United Kingdom and imposed a fine of ₹0.1 million (US$1,000).[186] On 27 July 2021, a two-judge bench of the Madras High Court stayed the earlier order.[187] On 25 January 2022, the court dismissed the critical statements made by the earlier judge, and on 15 July 2022, the court declared that no fine shall be imposed.[188][189][190]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 016
+
+**Unique ID:** `vijay-actor-016`
+**Title/Summary:** Vijay — Accolades, awards, honorary doctorate, and recognition
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Accolades`, `awards`, `Kalaimaamani`, `Government of Tamil Nadu`, `Dr. M.G.R. University`, `International Achievement Recognition Awards`, `Mersal`, `Tamil Nadu State Film Awards`
+
+---
+
+ACCOLADES
+
+Main article: List of awards and nominations received by Vijay
+
+In 1998, Vijay was awarded the Kalaimaamani award by the Government of Tamil Nadu. He received an honorary doctorate from the Dr. M.G.R. University for his achievements in the film industry in 2007.[191] He has received numerous other awards and accolades for his acting.[192][193] He was awarded the Best International Actor of 2018 in the International Achievement Recognition Awards for his role in Mersal.[194]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 017
+
+**Unique ID:** `vijay-actor-017`
+**Title/Summary:** Vijay — Public perception, image, fan following, dancing, acting, and philanthropy
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `Public Perception`, `Image`, `Thalapathy`, `fan following`, `Tamil cinema`, `playback singer`, `dancer`, `philanthropist`, `acting`
+
+---
+
+PUBLIC PERCEPTION AND IMAGE
+
+Referred to as Thalapathy, Vijay has a significant fan following in India.[195] News 18 describes Vijay as a "versatile actor" and a "fantastic playback singer, dancer and philanthropist".[196][197] He has been praised for his dancing,[198] with The Times of India labelling his dance moves as "energetic and effortless".[199][200] He has been praised for his acting skills, with Zee Media reporting that "Vijay amazed audiences with his acting and screen presence".[201]
+
+
+==================== END CHUNK ====================
+
+# RAG CHUNK 018
+
+**Unique ID:** `vijay-actor-018`
+**Title/Summary:** Vijay — Media presence, celebrity rankings, social media attention, wax figure, and brand perception
+**Source:** Provided source content
+**Keywords/Tags:** `Vijay`, `In the Media`, `Rediff.com`, `Best Tamil Actors`, `Forbes India Celebrity 100`, `Twitter`, `Kanyakumari`, `wax figure`, `Eastern Eye`, `Indian Institute of Human Brands`, `IMDb`, `Asian Stars`
+
+---
+
+IN THE MEDIA
+
+Vijay was placed second in Rediff.com's "Best Tamil Actors" list in 2012.[202] He has appeared several times on Forbes India Celebrity 100 list from 2012 to 2019,[203][204] and peaked at 26th position in 2018.[205] He was the third most tweeted-about South Indian actor in 2020, and in 2021, he was the most tweeted-about actor on the same list.[206][207] In 2019, a wax figure of Vijay was unveiled in a museum in Kanyakumari.[208][209] In 2023, Vijay was ranked eighth among the global celebrities in Asia by the Eastern Eye magazine.[210][211] As per a research study conducted in 2023 by Indian Institute of Human Brands, Vijay was one of the most bankable celebrities in South India.[212] In 2024, he was placed 35th on IMDb's list of 100 most viewed Indian Stars.[213] In the same year, he was placed sixth in Eastern Eye's Top 50 Asian Stars.[214]
