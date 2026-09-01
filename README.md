@@ -569,6 +569,8 @@ A running list of the highest-signal resources for going deeper, organized by ty
 - Shinn et al., "Reflexion: Language Agents with Verbal Reinforcement Learning" — https://arxiv.org/abs/2303.11366
 
 ### Recognized practitioners & video resources
+* **Computer Lab Tamil** — Tamil-language video tutorials and practical walkthroughs for learning LangChain concepts — https://www.youtube.com/watch?v=I1uWjjhyGMI&list=PLSXooZlk4CqoI_mIqFTHiD9NSuh44kbUg&index=16 
+
 - Harrison Chase (LangChain founder) — talks and blog posts on framework design decisions — https://blog.langchain.dev/
 - LangChain's official YouTube channel — walkthroughs of new features as they ship — https://www.youtube.com/@LangChain
 - Aurelio AI's LangChain learning hub — deep, code-first tutorials on LCEL and agent design — https://www.aurelio.ai/learn
