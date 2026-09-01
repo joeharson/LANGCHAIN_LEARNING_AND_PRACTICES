@@ -35,3 +35,6 @@ python-magic
 #tesseract
 #rapidocr_onnxruntime
 easyocr
+
+
+tiktoken
