@@ -1,15 +1,37 @@
+# Langchain and LLMs
 langchain_google_genai
 langchain-groq
 langchain
 load_dotenv
 langchain_core
+
+# huggingface 
 langchain-huggingface
+
+## Langchain Community
 langchain-community
+
+
 sentence-transformers
+
+# Api connectivity
 fastapi
 uvicorn[standard]
 
+# for uv Accessing jupyter Notebook
 jupyter
 ipykernel
 
+# DataBase
 faiss-cpu
+
+# unstructured packages
+langchain-unstructured
+unstructured-client
+unstructured
+unstructured[pdf]
+python-magic
+# ocr
+#tesseract
+#rapidocr_onnxruntime
+easyocr
