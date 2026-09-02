@@ -24,6 +24,8 @@ ipykernel
 
 # DataBase
 faiss-cpu
+chromadb
+langchain-chroma
 
 # unstructured packages
 langchain-unstructured
@@ -40,4 +42,6 @@ easyocr
 tiktoken
 
 langchain-classic
-agent_scratchpad
+google-search-results
+serpapi
+ddgs
