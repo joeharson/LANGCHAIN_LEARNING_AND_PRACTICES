@@ -1,580 +1,1245 @@
-# LANGCHAIN_LEARNING_AND_PRACTICES
+# LANGCHAIN LEARNING & PRACTICES
 
-> A hands-on, curriculum-style knowledge base for mastering LangChain — from first principles to production-grade agentic systems.
+> A hands-on learning journey through LangChain — from basic LLM interaction to RAG and agentic systems.
 
-This repository exists to **learn and practice LangChain**, not to ship a product. Every file, notebook, and snippet in here is an exploration: a way to build real intuition for how LangChain's components fit together, why each abstraction exists, and where it breaks down in practice. Think of this README as a textbook you can read top to bottom, or a reference you can jump into at any section when you need a refresher on a specific concept.
+This repository is dedicated to **learning, understanding, experimenting, and practicing LangChain**.
 
-LangChain (and its lower-level runtime, LangGraph) moves fast. Both reached a stable **v1.0** in October 2025, which consolidated a lot of previously scattered patterns — `create_agent` is now the standard high-level entry point for building agents, and LCEL (LangChain Expression Language) remains the standard way to compose deterministic chains. This README reflects that current shape of the ecosystem while still explaining the underlying ideas that don't change release to release.
+The notebooks are arranged as a progressive learning path. Each module focuses on a specific LangChain concept and gradually builds toward more advanced topics such as **LCEL, conversation memory, RAG, document processing, tools, and agents**.
 
----
+The goal is not just to learn how to write LangChain code, but to understand:
 
-## Table of Contents
-
-1. [Core Concepts](#1-core-concepts)
-2. [Module: LLM Integrations](#2-module-llm-integrations)
-3. [Module: Prompt Engineering & Templating](#3-module-prompt-engineering--templating)
-4. [Module: Chains — Sequential, Parallel, Conditional](#4-module-chains--sequential-parallel-conditional)
-5. [Module: Agents & Tool Use](#5-module-agents--tool-use)
-6. [Module: Memory](#6-module-memory)
-7. [Module: Document Loaders & Text Splitters](#7-module-document-loaders--text-splitters)
-8. [Module: Vector Stores & Retrievers](#8-module-vector-stores--retrievers)
-9. [Module: Embedding Models](#9-module-embedding-models)
-10. [Module: Callbacks & Observability](#10-module-callbacks--observability)
-11. [Integration Ecosystem](#11-integration-ecosystem)
-12. [Advanced Patterns](#12-advanced-patterns)
-13. [Practical Learning Exercises](#13-practical-learning-exercises)
-14. [Curated Reference Library](#14-curated-reference-library)
+* What each LangChain component does
+* Why it is needed
+* How different components connect together
+* How data flows through a LangChain application
+* When to use one approach over another
+* How simple chains gradually evolve into RAG and agentic applications
 
 ---
 
-## 1. Core Concepts
+# Learning Path
 
-Before touching code, it helps to have a mental model of what LangChain actually *is*: a set of standard interfaces and composition primitives that sit on top of raw LLM APIs, so you don't reinvent prompt formatting, output parsing, retrieval, and tool-calling every time you build something new.
+The recommended learning flow is:
 
-### The building blocks
-
-| Concept | What it is | Real-world analogy |
-|---|---|---|
-| **Chat Model** | A standardized wrapper around a provider's LLM API (OpenAI, Anthropic, etc.) | A universal power adapter — same plug shape regardless of the wall socket behind it |
-| **Prompt Template** | A parameterized instruction that gets filled in with runtime variables | A form letter with blanks to fill in |
-| **Output Parser** | Converts raw model text into structured data (JSON, a Pydantic object, a list) | A form-scanner that turns handwriting into database rows |
-| **Chain** | A composed pipeline of steps (prompt → model → parser → next step) | An assembly line — each station does one job and hands off to the next |
-| **Agent** | A model that decides *which* tools to call and in *what order*, based on the task | A project manager who delegates work to specialists rather than doing it all themselves |
-| **Tool** | A function the model can invoke (search the web, query a database, call an API) | A specialist the project manager can call in |
-| **Memory** | State that persists across turns of a conversation or across runs | A notebook the assistant re-reads before responding |
-| **Retriever** | Something that fetches relevant documents given a query | A librarian who finds the right books instead of you reading the whole library |
-| **Callback** | A hook that fires at each step of execution, for logging/tracing/streaming | Security cameras — they don't change what happens, they just observe it |
-
-### Why this abstraction layer matters
-
-Every LLM provider has a slightly different API shape, slightly different message formats, and slightly different tool-calling conventions. Without a framework, switching from GPT-4o to Claude to a local Llama model means rewriting your integration code. LangChain's value isn't "magic" — it's a **consistent interface** so the same chain or agent logic can run against different backends with a one-line change.
-
-The second thing the framework buys you is **composability**. Once every component speaks the same "Runnable" interface, you can pipe them together with the same operator (`|` in Python, following LCEL) the same way you'd pipe shell commands together. This is the single idea that unlocks most of what follows in this README.
-
-### LangChain vs. LangGraph — get this distinction early
-
-This trips up almost everyone starting out, so it's worth being explicit:
-
-- **LangChain** is the high-level framework: standardized model/tool/message abstractions, prompt templates, retrievers, and the `create_agent` API for building agents quickly.
-- **LangGraph** is the low-level **orchestration runtime** underneath it: durable execution, persistence, streaming, human-in-the-loop interrupts, and state machines. As of the 1.0 releases, agents built via LangChain's `create_agent` actually **run on LangGraph** under the hood — you get LangGraph's durability and streaming for free without needing to write graph code yourself.
-- You reach for **raw LangGraph** when you need fine-grained control over a custom state machine — conditional branches, cycles, subgraphs, or mixing fully deterministic steps with agentic ones in ways `create_agent` doesn't expose.
-
-A good rule of thumb while learning: start with LCEL chains and `create_agent`. Drop down to LangGraph only when you hit a wall that the high-level API can't express.
-
-**References**
-- LangChain conceptual overview — https://python.langchain.com/docs/concepts/
-- "LangGraph overview" (LangChain vs. LangGraph relationship) — https://docs.langchain.com/oss/python/langgraph/overview
-- LangChain & LangGraph reach v1.0 (official announcement) — https://www.langchain.com/blog/langchain-langgraph-1dot0
-- Harrison Chase, original LangChain announcement blog post (for historical context) — https://blog.langchain.dev/
-
----
-
-## 2. Module: LLM Integrations
-
-### Concept
-
-A **Chat Model** in LangChain wraps a provider's completion endpoint behind a standard `invoke` / `stream` / `batch` interface, and normalizes messages into a common `HumanMessage` / `AIMessage` / `SystemMessage` / `ToolMessage` schema. This is what lets the exact same downstream chain code run against OpenAI, Anthropic, Google, a local Ollama model, or dozens of other providers.
-
-### Why it matters
-
-Model choice is not a one-time decision. You'll swap models constantly while learning and building: a cheap fast model for prototyping, a stronger reasoning model for production, a local model for offline experiments. If your chain logic is coupled to a specific provider's SDK, every swap becomes a rewrite. Standardizing on LangChain's chat model interface means the swap is a one-line change.
-
-### Common pitfalls
-
-- **Assuming feature parity across providers.** Not every model supports structured output, parallel tool calls, or vision inputs the same way. Always check the provider's integration page before assuming a feature works.
-- **Ignoring token limits and pricing differences** when swapping models — a chain tuned for a 128k-context model may silently truncate on a smaller one.
-- **Hardcoding a model string** instead of using `init_chat_model`, which lets you swap providers via a config string rather than an import.
-
-### Mini-exercise
-
-```python
-from langchain.chat_models import init_chat_model
-
-# Swap the provider by changing only the string — no other code changes.
-model = init_chat_model("gpt-4o-mini", model_provider="openai")
-# model = init_chat_model("claude-sonnet-4-6", model_provider="anthropic")
-
-response = model.invoke("Explain the difference between a chain and an agent in one paragraph.")
-print(response.content)
+```text
+LangChain Basics
+      ↓
+Prompt Templates
+      ↓
+Model Parameters
+      ↓
+Runnables
+      ↓
+Output Parsers
+      ↓
+Chain Execution Methods
+      ↓
+LCEL
+      ↓
+Conversation Memory
+      ↓
+Memory Optimization
+      ↓
+Sequential & Conditional Chains
+      ↓
+Frontend Integration
+      ↓
+RAG Fundamentals
+      ↓
+Document Loaders
+      ↓
+Document Splitting
+      ↓
+Agents & Tools
+      ↓
+Advanced Agentic RAG
 ```
 
-**References**
-- Chat models conceptual guide — https://python.langchain.com/docs/concepts/chat_models/
-- `init_chat_model` API reference — https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html
-- Integrations directory (all supported providers) — https://python.langchain.com/docs/integrations/providers/
+---
+
+# 1. LangChain Basics
+
+### Module 1
+
+Start by understanding the basic idea of **LangChain** and how an LLM application is connected together.
+
+### Topics
+
+* Introduction to LangChain
+* Basic LangChain workflow
+* LLM / Chat Model interaction
+* Basic prompt → model flow
+* Understanding the role of LangChain between the application and the model
+
+### Goal
+
+Understand the basic idea of LangChain before moving into its individual components.
+
+> 📘 **Deep Dive — Why not just call the model API directly?**
+> A raw API call only gives you a single request → response cycle. LangChain adds a standard layer on top of that call — prompt templating, memory, retrieval, tool use, and output parsing — so those pieces can be swapped and recombined without rewriting the underlying application logic. Think of the LLM as the "engine" and LangChain as the "chassis" that lets you attach different components (prompts, memory, tools) around it in a consistent way.
+>
+> **Minimal example:**
+> ```python
+> from langchain_openai import ChatOpenAI
+>
+> model = ChatOpenAI(model="gpt-4o-mini")
+> response = model.invoke("What is LangChain?")
+> print(response.content)
+> ```
+> This single call is the foundation every later module builds on top of.
 
 ---
 
-## 3. Module: Prompt Engineering & Templating
+# 2. Prompt Templates
 
-### Concept
+### Module 2.1
 
-A `PromptTemplate` (for plain text) or `ChatPromptTemplate` (for structured chat messages) separates the *static instruction* from the *dynamic input*. Instead of string-concatenating user input into a prompt (a common source of bugs and injection issues), templates declare named variables that get filled in safely at runtime.
+Prompt templates are one of the first important abstractions to understand because they separate the **prompt structure** from the **input data**.
 
-### Why it matters
+### Topics
 
-Prompts are the actual "source code" of an LLM application, and they deserve the same rigor as any other code: version control, reuse, testing, and separation of concerns. A well-designed prompt template lets you:
-- Reuse the same instruction across many chains
-- Swap few-shot examples in and out without touching logic
-- Keep system instructions separate from user-provided content (reducing prompt injection risk)
+* `PromptTemplate`
+* `ChatPromptTemplate`
+* Difference between `PromptTemplate` and `ChatPromptTemplate`
+* Static prompts vs dynamic prompts
+* Prompt variables
+* Creating prompts from templates
+* Connecting prompts with models
+* Prompt chaining
 
-### Common pitfalls
+### Goal
 
-- **Cramming too much into one prompt.** If a prompt is trying to do five things at once, it will do all five poorly. Split into multiple chained prompts instead.
-- **Not using `MessagesPlaceholder`** for conversation history, leading to manually-formatted (and error-prone) chat transcripts.
-- **Forgetting that few-shot examples count against your context window** — more examples isn't always better once you factor in cost and latency.
+Understand how prompts are created, parameterized, and connected to LLMs.
 
-### Mini-exercise
+> 📘 **Deep Dive — `PromptTemplate` vs `ChatPromptTemplate`**
+> `PromptTemplate` produces a single plain-text string, which suits text-completion-style models. `ChatPromptTemplate` produces a *list of role-tagged messages* (system, human, AI), which matches how chat models actually expect their input. In practice almost all modern usage favors `ChatPromptTemplate` because most production models are chat-tuned.
+>
+> ```python
+> from langchain_core.prompts import ChatPromptTemplate
+>
+> prompt = ChatPromptTemplate.from_messages([
+>     ("system", "You are a helpful {domain} expert."),
+>     ("human", "{question}")
+> ])
+>
+> formatted = prompt.invoke({"domain": "cooking", "question": "How do I poach an egg?"})
+> ```
+> **Best practice:** keep the system message stable and put only the variable parts (`{question}`, `{domain}`) in the template — this makes prompts easier to test and reuse across chains.
+
+---
+
+# 3. Model Parameters
+
+### Module 2.2
+
+After learning how to create prompts, understand how model configuration affects the generated response.
+
+### Topics
+
+* Chat models
+* Model parameters
+* Model configuration
+* Temperature
+* Model-specific configuration
+* Comparing model behavior with different settings
+* Difference between text-oriented and chat-oriented model interaction
+
+### Goal
+
+Understand that the model is not just a function that receives text — its configuration also affects how it behaves.
+
+> 📘 **Deep Dive — Common parameters at a glance**
+>
+> | Parameter | Effect | Typical use |
+> |---|---|---|
+> | `temperature` | Controls randomness (0 = deterministic, 1+ = creative) | Low for factual/QA tasks, higher for creative writing |
+> | `max_tokens` | Caps the length of the generated response | Control cost and response size |
+> | `top_p` | Nucleus sampling — restricts token pool by cumulative probability | Alternative/complement to temperature |
+> | `stop` | Sequence(s) that stop generation early | Prevent runaway output, enforce format |
+>
+> A useful habit while learning: run the **same prompt** through a chain twice, once with `temperature=0` and once with `temperature=0.9`, and compare outputs side by side — this makes the effect of the parameter concrete rather than theoretical.
+
+---
+
+# 4. Runnables
+
+### Module 3
+
+Runnables are one of the most important foundations for understanding modern LangChain composition.
+
+### Topics
+
+* Callable vs Runnable
+* Runnable concept
+* `RunnablePassthrough`
+* `RunnableLambda`
+* `RunnableParallel`
+* `.assign()`
+* Passing data between runnables
+* Running multiple operations in parallel
+* Combining different runnables
+* Building chains using runnables
+
+### Important Concepts
+
+#### `RunnablePassthrough`
+
+Passes the original input forward without modifying it.
+
+#### `RunnableLambda`
+
+Converts a normal Python function into a Runnable so it can participate in a LangChain pipeline.
+
+#### `RunnableParallel`
+
+Runs multiple Runnable operations using the same input and combines their results.
+
+#### `.assign()`
+
+Allows additional information to be generated while keeping existing input data.
+
+### Goal
+
+Understand the fundamental building blocks used to construct LangChain pipelines.
+
+> 📘 **Deep Dive — Seeing `RunnableParallel` in action**
+> ```python
+> from langchain_core.runnables import RunnableParallel, RunnableLambda
+>
+> chain = RunnableParallel(
+>     upper=RunnableLambda(lambda x: x["text"].upper()),
+>     length=RunnableLambda(lambda x: len(x["text"])),
+> )
+>
+> chain.invoke({"text": "hello langchain"})
+> # -> {"upper": "HELLO LANGCHAIN", "length": 16}
+> ```
+> **Why this matters:** every LangChain component — prompts, models, parsers, retrievers — implements the same `Runnable` interface (`.invoke()`, `.batch()`, `.stream()`). That's exactly what makes the `|` pipe operator in LCEL (Module 6) possible later on.
+
+---
+
+# 5. Output Parsers
+
+### Module 4
+
+LLMs normally return model responses, but applications often need the output in a specific format.
+
+Output parsers help convert model output into a more useful structure.
+
+### Topics
+
+* Why output parsers are required
+* `StrOutputParser`
+* JSON output parsing
+* `JsonOutputParser`
+* Pydantic output parsing
+* `PydanticOutputParser`
+* Structured output parsing
+* `StructuredOutputParser`
+* `CommaSeparatedListOutputParser`
+* `DatetimeOutputParser`
+* `EnumOutputParser`
+* Retry output parsing
+* Output validation
+* Pydantic schemas
+* Format instructions
+
+### Important Concept
+
+Instead of simply using:
 
 ```python
-from langchain_core.prompts import ChatPromptTemplate
-
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are a terse, expert Python code reviewer. Flag bugs, not style."),
-    ("human", "Review this function:\n\n{code}"),
-])
-
-formatted = prompt.invoke({"code": "def add(a, b):\n    return a - b"})
-print(formatted.to_messages())
+response.content
 ```
 
-**References**
-- Prompt templates conceptual guide — https://python.langchain.com/docs/concepts/prompt_templates/
-- Anthropic's own prompt engineering guide (provider-agnostic techniques) — https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview
-- LangChain Hub — community-shared, reusable prompts — https://smith.langchain.com/hub
+an output parser provides a controlled way to transform the model response into the required format.
+
+### Pydantic
+
+Understand how Pydantic can be used to define the expected structure and validate model output.
+
+### Goal
+
+Learn how to move from **unstructured LLM output → structured application-ready output**.
+
+> 📘 **Deep Dive — `PydanticOutputParser` in practice**
+> ```python
+> from pydantic import BaseModel, Field
+> from langchain_core.output_parsers import PydanticOutputParser
+>
+> class Movie(BaseModel):
+>     title: str = Field(description="Movie title")
+>     year: int = Field(description="Release year")
+>
+> parser = PydanticOutputParser(pydantic_object=Movie)
+> print(parser.get_format_instructions())  # inject this into your prompt
+> ```
+> **Tip:** the `format_instructions` string generated by the parser should be inserted directly into the prompt template — this is how the model "knows" the exact JSON shape it must return. If parsing still fails intermittently, `RetryOutputParser` / `OutputFixingParser` can re-prompt the model to correct malformed output.
 
 ---
 
-## 4. Module: Chains — Sequential, Parallel, Conditional
+# 6. Important Chain Execution Methods
 
-### Concept
+### Module 5
 
-A **chain** composes multiple `Runnable` steps into a single pipeline. LCEL expresses this with the pipe operator: `prompt | model | parser`. Under the hood, every LCEL chain automatically gets streaming, batching, and async support — you don't implement those separately.
+Once prompts, models, runnables, and parsers are understood, learn how LangChain components are actually executed.
 
-- **Sequential chains** run steps one after another, each depending on the previous step's output.
-- **Parallel chains** (via `RunnableParallel`) run multiple independent branches concurrently and merge their outputs into a dict — useful when you need several unrelated pieces of information before proceeding.
-- **Conditional chains** (via `RunnableBranch` or a lightweight custom function) route execution down different paths depending on the input — e.g., classify the query first, then send it to a specialized sub-chain.
+### Topics
 
-### Why it matters
+* `.invoke()`
+* `.batch()`
+* `.stream()`
+* `.ainvoke()`
+* `.abatch()`
+* `.astream()`
+* `.astream_events()`
+* Synchronous execution
+* Asynchronous execution
+* Batch execution
+* Streaming execution
+* Async batch processing
+* Difference between `.stream()` and `.astream()`
+* Parallel processing concepts
 
-Almost every non-trivial LLM application is really a **pipeline**, not a single prompt. Understanding how to compose chains is the difference between a fragile script and a maintainable system. Parallelism specifically matters for latency — if you need both a summary and a sentiment score from the same document, running those two sub-chains in parallel instead of sequentially can roughly halve wall-clock time.
+### Goal
 
-### Common pitfalls
+Understand the different ways a LangChain chain can be executed depending on the application's requirements.
 
-- **Using conditional logic in Python control flow instead of `RunnableBranch`** when the chain itself needs to be introspectable/traceable — you lose observability into why a branch was taken.
-- **Not handling partial failures in parallel chains** — if one branch errors, decide explicitly whether the whole chain should fail or degrade gracefully.
-- **Reaching for LangGraph when a simple sequential or parallel LCEL chain would do.** Not every workflow needs a full state machine.
+> 📘 **Deep Dive — Which method to use when**
+>
+> | Method | Sync/Async | Use case |
+> |---|---|---|
+> | `.invoke()` | Sync | Single input, single output — simplest case |
+> | `.batch()` | Sync | Many independent inputs processed together |
+> | `.stream()` | Sync | Token-by-token output for a single request (e.g. CLI apps) |
+> | `.ainvoke()` | Async | Same as `.invoke()` inside an async web server |
+> | `.abatch()` | Async | High-throughput batch processing without blocking the event loop |
+> | `.astream()` | Async | Streaming inside async frameworks (FastAPI, etc.) — pairs naturally with Module 9 |
+> | `.astream_events()` | Async | Fine-grained events (per-step, per-token) — useful for debugging agent chains |
+>
+> **Rule of thumb:** use the sync methods (`.invoke`, `.batch`, `.stream`) for scripts and notebooks; switch to the `a`-prefixed async methods once the chain is served behind a web framework like FastAPI, so a single slow LLM call doesn't block other requests.
 
-### Mini-exercise
+---
 
-```python
-from langchain_core.runnables import RunnableParallel, RunnableLambda
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chat_models import init_chat_model
+# 7. LCEL — LangChain Expression Language
 
-model = init_chat_model("gpt-4o-mini", model_provider="openai")
+### Module 6
 
-summarize = ChatPromptTemplate.from_template("Summarize in one sentence:\n{text}") | model
-sentiment = ChatPromptTemplate.from_template("Classify sentiment (positive/negative/neutral):\n{text}") | model
+LCEL brings the previous concepts together and provides a clean way to compose LangChain components.
 
-# Both branches run concurrently against the same input.
-parallel_chain = RunnableParallel(summary=summarize, sentiment=sentiment)
+### Topics
 
-result = parallel_chain.invoke({"text": "The new release fixed most bugs but performance regressed."})
-print(result["summary"].content)
-print(result["sentiment"].content)
+* LangChain Expression Language
+* LCEL syntax
+* Runnable composition
+* Pipe operator `|`
+* Prompt → Model → Parser
+* Building a chatbot with LCEL
+* Single-session conversation
+* Multi-session conversation
+* Conversation history
+* `ChatMessageHistory`
+* `RunnableWithMessageHistory`
+
+### Core Idea
+
+```text
+Input
+  ↓
+Prompt
+  ↓
+Model
+  ↓
+Parser
+  ↓
+Output
 ```
 
-**References**
-- LCEL conceptual guide — https://python.langchain.com/docs/concepts/lcel/
-- `RunnableParallel` / `RunnableBranch` how-to guides — https://python.langchain.com/docs/how_to/#langchain-expression-language-lcel
-- Aurelio AI — "LangChain Expression Language (LCEL)" deep-dive tutorial — https://www.aurelio.ai/learn/langchain-lcel
+LCEL allows these components to be composed into a single pipeline.
+
+### Goal
+
+Understand how individual LangChain components become a complete application pipeline.
+
+> 📘 **Deep Dive — The pipe operator, concretely**
+> ```python
+> from langchain_core.output_parsers import StrOutputParser
+>
+> chain = prompt | model | StrOutputParser()
+> chain.invoke({"domain": "cooking", "question": "How do I poach an egg?"})
+> ```
+> Because `prompt`, `model`, and `StrOutputParser()` are all `Runnable`s (Module 3), the `|` operator simply wires the output of one into the input of the next — this is the same idea as Unix pipes, applied to LLM components. This is why LCEL chains automatically support `.batch()`, `.stream()`, and their async equivalents without any extra code.
 
 ---
 
-## 5. Module: Agents & Tool Use
+# 8. Conversation Memory
 
-### Concept
+### Module 6 & Module 7
 
-An **agent** is a chain where the *model itself* decides what happens next — which tool to call, with what arguments, and when to stop and respond to the user. In the current LangChain (1.0+) API, `create_agent` is the standard high-level constructor: give it a model and a list of `@tool`-decorated functions, and it returns a ready-to-run agent that internally loops through "reason → call a tool → observe the result → repeat" until it has a final answer.
+After creating a chatbot, the next problem is conversation history.
 
-Agents are built on top of LangGraph, which means they automatically get streaming, persistence, and human-in-the-loop interrupt support — capabilities that used to require hand-written orchestration.
+A chatbot needs to remember previous messages so that future responses have the required context.
 
-### Why it matters
+### Topics
 
-Chains are appropriate when *you* know the sequence of steps in advance. Agents are appropriate when the sequence depends on the input in ways you can't fully predict ahead of time — "look something up, and if it's ambiguous, look up something else first." This is the core trade-off: agents trade predictability for flexibility, and that trade-off comes with real cost (more tokens, more latency, more failure modes) that you should only pay for when you need it.
+* Chat history
+* Conversation state
+* `HumanMessage`
+* `AIMessage`
+* `ChatMessageHistory`
+* Session-based conversations
+* Multiple users / multiple sessions
+* `RunnableWithMessageHistory`
+* Storing conversation history
+* Retrieving previous messages
 
-### Common pitfalls
+### Goal
 
-- **Vague tool docstrings.** The tool's docstring *is* the interface the model reasons about — treat it like an API contract, not an afterthought. A vague description produces an agent that calls the right tool with the wrong arguments, or the wrong tool entirely, and the failure looks like "the model is dumb" when it's really "the interface was undocumented."
-- **Giving agents too many tools.** Beyond roughly a dozen tools, models start confusing similar-sounding ones. Group related tools, or route to specialized sub-agents instead.
-- **No guardrails on destructive actions.** Any tool that writes, deletes, or sends something on the user's behalf should have a human-in-the-loop confirmation step, not silent execution.
-- **Treating "agent" as the default choice.** Reach for an agent only when a chain genuinely can't express the logic — see the trade-off above.
+Understand how conversation state is maintained across multiple interactions.
 
-### Mini-exercise
+> 📘 **Deep Dive — Wiring memory into an LCEL chain**
+> ```python
+> from langchain_community.chat_message_histories import ChatMessageHistory
+> from langchain_core.runnables.history import RunnableWithMessageHistory
+>
+> store = {}
+> def get_session_history(session_id: str):
+>     if session_id not in store:
+>         store[session_id] = ChatMessageHistory()
+>     return store[session_id]
+>
+> chain_with_history = RunnableWithMessageHistory(chain, get_session_history)
+> chain_with_history.invoke(
+>     {"question": "What's the capital of France?"},
+>     config={"configurable": {"session_id": "user-123"}},
+> )
+> ```
+> **Key idea:** the `session_id` is what lets a single deployed chain serve *many independent conversations* at once — each session gets its own history object, keyed by ID, rather than one global history shared by all users.
 
-```python
-from langchain.agents import create_agent
-from langchain.tools import tool
+---
 
-@tool
-def get_weather(city: str) -> str:
-    """Look up the current weather for a given city name."""
-    # In a real tool, call a weather API here.
-    return f"It's sunny and 24°C in {city}."
+# 9. Memory Optimization
 
-agent = create_agent("gpt-4o-mini", tools=[get_weather])
+### Module 7
 
-result = agent.invoke({"messages": [{"role": "user", "content": "Should I bring an umbrella in Chennai today?"}]})
-print(result["messages"][-1].content)
+Keeping the complete conversation forever can cause the context to grow continuously.
+
+This module explores ways to control conversation history.
+
+### Topics
+
+* Why conversation history needs optimization
+* Sliding-window memory
+* Last `N` messages
+* Manual history trimming
+* `RunnableWithMessageHistory`
+* Summarized conversation memory
+* Comparing different memory strategies
+* Context size considerations
+
+### Main Approaches
+
+```text
+Full History
+     ↓
+Sliding Window
+     ↓
+Summarized History
 ```
 
-**References**
-- LangChain agents conceptual guide — https://python.langchain.com/docs/concepts/agents/
-- `create_agent` reference & quickstart — https://docs.langchain.com/oss/python/langchain/agents
-- LangGraph Academy — free structured course on the underlying orchestration — https://academy.langchain.com/
-- ReAct paper (the reasoning+acting pattern most agents are built on) — Yao et al., "ReAct: Synergizing Reasoning and Acting in Language Models" — https://arxiv.org/abs/2210.03629
+### Goal
+
+Understand how to maintain useful conversational context without unnecessarily sending the entire conversation every time.
+
+> 📘 **Deep Dive — Trade-offs between strategies**
+>
+> | Strategy | Pros | Cons |
+> |---|---|---|
+> | Full history | Nothing is lost | Context grows unbounded, cost/latency increases over time |
+> | Sliding window (last *N*) | Cheap, simple, bounded cost | Older but still-relevant context is silently dropped |
+> | Summarized history | Keeps long-range context compactly | Summarization itself costs an extra LLM call and can lose nuance |
+>
+> **Practical guidance:** sliding-window memory is usually enough for short task-oriented chats (support bots, quick Q&A). Summarized memory is worth the extra complexity for long-running assistants where early context (e.g. a user's stated preferences) still matters many turns later.
 
 ---
 
-## 6. Module: Memory
+# 10. Sequential & Conditional Chains
 
-### Concept
+### Module 8
 
-"Memory" in an LLM application just means: **what gets carried forward into the next prompt.** LangChain has moved away from the older, opaque `ConversationBufferMemory`-style classes and toward explicit, inspectable state management — typically via LangGraph's checkpointing, where the full message history (or a summarized/trimmed version of it) is stored as part of the graph's persisted state and threaded back into the model on each turn.
+Not every application requires an agent.
 
-Broadly, the *types* of memory you'll encounter conceptually are still the same regardless of the exact API:
+Many applications can be solved using deterministic chains where the sequence of operations is already known.
 
-- **Buffer memory** — keep the raw, full conversation history.
-- **Windowed memory** — keep only the last *N* turns.
-- **Summarizing memory** — periodically compress older turns into a running summary to save context budget.
-- **Entity / long-term memory** — extract and persist durable facts about the user or task across sessions, not just within one conversation.
+### Topics
 
-### Why it matters
+* Sequential chains
+* Multiple-step workflows
+* Intermediate outputs
+* Final output
+* Simple sequential chains
+* `RunnableSequence`
+* `.pipe()`
+* `RunnablePassthrough`
+* `RunnableLambda`
+* `RunnableBranch`
+* Conditional routing
+* Routing based on input
+* Combining multiple chains
 
-Context windows are large but not infinite, and every token of history costs latency and money on every subsequent turn. Naive "just keep appending everything" memory works for a demo and falls over in a real, long-running conversation. Choosing the right memory strategy is a direct trade-off between **fidelity** (does the model remember the right thing) and **cost/latency** (how much you're re-sending every turn).
+### Example Concept
 
-### Common pitfalls
-
-- **Using buffer memory in production** for anything long-running — costs grow unbounded with conversation length.
-- **Summarizing too aggressively**, losing specific details (names, numbers, exact prior instructions) that the summary compresses away.
-- **Conflating short-term conversational memory with long-term user memory.** These solve different problems and usually need different storage (in-memory/session state vs. a persistent database or vector store).
-
-### Mini-exercise
-
-```python
-from langgraph.checkpoint.memory import InMemorySaver
-from langchain.agents import create_agent
-from langchain.tools import tool
-
-@tool
-def echo(text: str) -> str:
-    """Repeat back the given text."""
-    return text
-
-checkpointer = InMemorySaver()
-agent = create_agent("gpt-4o-mini", tools=[echo], checkpointer=checkpointer)
-
-config = {"configurable": {"thread_id": "demo-session-1"}}
-
-agent.invoke({"messages": [{"role": "user", "content": "My favorite color is teal."}]}, config)
-result = agent.invoke({"messages": [{"role": "user", "content": "What's my favorite color?"}]}, config)
-print(result["messages"][-1].content)  # The agent recalls "teal" via the persisted thread state.
+```text
+Input
+  ↓
+Step 1
+  ↓
+Step 2
+  ↓
+Step 3
+  ↓
+Final Output
 ```
 
-**References**
-- LangGraph persistence & memory guide — https://langchain-ai.github.io/langgraph/concepts/persistence/
-- "Add memory" how-to guide — https://langchain-ai.github.io/langgraph/how-tos/memory/add-memory/
-- MemGPT / "virtual context management" paper (foundational thinking on long-term LLM memory) — Packer et al., https://arxiv.org/abs/2310.08560
+Conditional workflow:
 
----
-
-## 7. Module: Document Loaders & Text Splitters
-
-### Concept
-
-**Document loaders** ingest content from a source (PDFs, web pages, Notion, Slack exports, databases, CSVs, etc.) and normalize it into LangChain's `Document` object — text plus metadata. **Text splitters** then break long documents into smaller chunks sized appropriately for embedding and retrieval, since embedding models and context windows both have practical limits, and retrieval quality tends to *decrease* on chunks that mix multiple unrelated topics.
-
-### Why it matters
-
-This module is the unglamorous plumbing underneath every RAG system, and it disproportionately determines RAG quality. A brilliant retrieval and generation pipeline built on badly-chunked documents (splitting mid-sentence, losing headers/context, chunking too large or too small) will underperform a mediocre pipeline built on well-chunked documents.
-
-### Common pitfalls
-
-- **Using a fixed character-count splitter on structured content** (code, markdown, tables) instead of a structure-aware splitter — you end up severing logically related content.
-- **Chunking too small**, losing surrounding context the model needs to answer correctly; **chunking too large**, diluting the embedding with irrelevant text and hurting retrieval precision.
-- **Dropping metadata during loading** (source URL, page number, section header) — this metadata is often what lets you cite sources or filter retrieval later.
-- **Not overlapping chunks** at all, which can sever a sentence or idea exactly at a chunk boundary.
-
-### Mini-exercise
-
-```python
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-
-splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,
-    chunk_overlap=50,
-)
-
-long_text = "..." * 2000  # imagine a full document here
-chunks = splitter.split_text(long_text)
-print(f"Split into {len(chunks)} chunks")
+```text
+                 ┌── Chain A
+Input → Router ──┤
+                 └── Chain B
 ```
 
-**References**
-- Document loaders conceptual guide — https://python.langchain.com/docs/concepts/document_loaders/
-- Text splitters conceptual guide — https://python.langchain.com/docs/concepts/text_splitters/
-- Greg Kamradt's chunking strategies notebook (widely cited practitioner reference) — https://github.com/FullStackRetrieval-com/RetrievalTutorials
+### Goal
+
+Understand how to build predictable multi-step workflows before moving into agents.
+
+> 📘 **Deep Dive — `RunnableBranch` for conditional routing**
+> ```python
+> from langchain_core.runnables import RunnableBranch
+>
+> branch = RunnableBranch(
+>     (lambda x: "refund" in x["query"].lower(), refund_chain),
+>     (lambda x: "technical" in x["query"].lower(), support_chain),
+>     general_chain,  # default fallback
+> )
+> ```
+> **When to reach for this instead of an agent:** if you already know the finite set of possible paths (e.g. "billing" vs "technical" vs "general"), a `RunnableBranch` is more predictable, cheaper, and easier to test than letting an LLM agent decide the route at runtime. Save agents (Module 13) for cases where the set of possible actions is open-ended or genuinely depends on reasoning.
 
 ---
 
-## 8. Module: Vector Stores & Retrievers
+# 11. Frontend & Streaming Integration
 
-### Concept
+### Module 9
 
-A **vector store** indexes document chunks by their embedding vectors and supports similarity search — given a query vector, find the *k* most semantically similar chunks. A **retriever** is the standard LangChain interface wrapping that search (`retriever.invoke(query)` returns `Document` objects), which lets you swap the underlying vector store without touching downstream chain code — the same abstraction pattern as chat models.
+This module introduces how a LangChain chatbot can be connected to a frontend application.
 
-### Why it matters
+### Topics
 
-Vector search is what lets an LLM answer questions about content it was never trained on, without fine-tuning. It's the retrieval half of RAG. Understanding the difference between similarity search, maximal marginal relevance (MMR — which also optimizes for *diversity*, not just closeness), and metadata-filtered search is what separates a retriever that returns near-duplicate chunks from one that returns genuinely useful, varied context.
+* FastAPI
+* API endpoints
+* Streaming chatbot responses
+* Backend chatbot integration
+* React frontend
+* Frontend ↔ Backend communication
+* Live response streaming
 
-### Common pitfalls
+### Learning Focus
 
-- **Treating vector search as a solved problem.** Pure semantic similarity search misses exact keyword matches (product codes, names, acronyms) that a hybrid (keyword + vector) retriever would catch.
-- **Not tuning `k`** (how many chunks to retrieve) — too few starves the model of context, too many drowns the relevant chunk in noise and burns tokens.
-- **Ignoring retriever evaluation entirely.** "It looks like it's working" is not the same as measuring retrieval precision/recall against a labeled test set.
-- **Re-embedding the same content on every run** instead of caching/persisting the index — expensive and unnecessary.
+This module is primarily for understanding how a LangChain application can be connected to an actual user interface.
 
-### Mini-exercise
+### Goal
 
-```python
-from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
-from langchain_core.documents import Document
+Understand the connection between:
 
-docs = [
-    Document(page_content="LangGraph provides durable execution and persistence for agents."),
-    Document(page_content="LCEL is the declarative syntax for composing chains."),
-    Document(page_content="Chroma is a lightweight, local-first vector store."),
-]
-
-vectorstore = Chroma.from_documents(docs, embedding=OpenAIEmbeddings())
-retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
-
-results = retriever.invoke("How does LangChain handle durability?")
-for doc in results:
-    print(doc.page_content)
+```text
+React Frontend
+      ↓
+FastAPI Backend
+      ↓
+LangChain
+      ↓
+LLM
 ```
 
-**References**
-- Retrieval conceptual guide — https://python.langchain.com/docs/concepts/retrievers/
-- Vector stores conceptual guide — https://python.langchain.com/docs/concepts/vectorstores/
-- Pinecone's "Retrieval Augmented Generation" learning series (deep, practitioner-oriented) — https://www.pinecone.io/learn/retrieval-augmented-generation/
+> 📘 **Deep Dive — Streaming endpoint sketch**
+> ```python
+> from fastapi import FastAPI
+> from fastapi.responses import StreamingResponse
+>
+> app = FastAPI()
+>
+> @app.post("/chat")
+> async def chat(payload: dict):
+>     async def token_generator():
+>         async for chunk in chain.astream(payload):
+>             yield chunk
+>     return StreamingResponse(token_generator(), media_type="text/plain")
+> ```
+> This is exactly where `.astream()` from Module 6 becomes practically useful: FastAPI's `StreamingResponse` forwards each token to the browser as soon as it's generated, which is what produces the familiar "typing" effect in chat UIs.
 
 ---
 
-## 9. Module: Embedding Models
+# 12. RAG — Retrieval-Augmented Generation
 
-### Concept
+### Module 10
 
-An **embedding model** converts text into a fixed-length numeric vector such that semantically similar text produces nearby vectors in that vector space. This is the mathematical substrate that makes similarity search possible — "nearby in meaning" becomes "nearby by cosine distance."
+RAG introduces an important transition from simple LLM applications to applications that can work with **external knowledge**.
 
-### Why it matters
+### Why RAG?
 
-The embedding model you choose directly determines retrieval quality, and it's a decision that's expensive to change later — swapping embedding models means re-embedding your entire corpus, since vectors from different models aren't comparable. It's also a decision with real trade-offs: dimensionality (higher isn't always better — it's slower and more expensive to store/search), domain fit (a general-purpose embedding model may underperform a domain-tuned one on legal or medical text), and cost (API-based vs. self-hosted).
+An LLM cannot automatically know the private or newly provided information contained in your own documents or databases.
 
-### Common pitfalls
+RAG provides a workflow for retrieving relevant information and giving it to the model as context.
 
-- **Mixing embeddings from different models in the same vector store** — the distances become meaningless.
-- **Not normalizing/matching the embedding model between indexing and querying.** If you index with one model and query with another, similarity search silently degrades.
-- **Assuming embedding quality is uniform across languages or domains** — always validate against your actual data, not a generic benchmark.
+### Core RAG Flow
 
-### Mini-exercise
-
-```python
-from langchain_openai import OpenAIEmbeddings
-import numpy as np
-
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-
-vec_a = embeddings.embed_query("How do I return a product?")
-vec_b = embeddings.embed_query("What's your refund policy?")
-vec_c = embeddings.embed_query("What's the weather like today?")
-
-def cosine_sim(a, b):
-    a, b = np.array(a), np.array(b)
-    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
-
-print("related pair:", cosine_sim(vec_a, vec_b))     # should be high
-print("unrelated pair:", cosine_sim(vec_a, vec_c))   # should be lower
+```text
+Documents
+    ↓
+Load
+    ↓
+Split
+    ↓
+Create Embeddings
+    ↓
+Store in Vector Database
+    ↓
+Retrieve Relevant Chunks
+    ↓
+Provide Context to LLM
+    ↓
+Generate Answer
 ```
 
-**References**
-- Embedding models conceptual guide — https://python.langchain.com/docs/concepts/embedding_models/
-- MTEB (Massive Text Embedding Benchmark) — the standard leaderboard for comparing embedding models — https://huggingface.co/spaces/mteb/leaderboard
-- OpenAI's embeddings guide — https://platform.openai.com/docs/guides/embeddings
+### Topics
+
+* What is RAG?
+* Why RAG is required
+* Document loading
+* Text splitting
+* Embeddings
+* Vector databases
+* Similarity search
+* Retrievers
+* Making vector stores usable as Runnables
+* `RunnablePassthrough`
+* Context retrieval
+* RAG chain
+* LLM response generation
+
+### Vector Store
+
+The module also demonstrates how a vector store can be converted into a Retriever/Runnable so that it can participate naturally in a LangChain pipeline.
+
+### Goal
+
+Understand the complete conceptual flow of a basic RAG application.
+
+> 📘 **Deep Dive — A minimal RAG chain**
+> ```python
+> retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
+>
+> rag_chain = (
+>     {"context": retriever, "question": RunnablePassthrough()}
+>     | prompt
+>     | model
+>     | StrOutputParser()
+> )
+> rag_chain.invoke("What does the report say about Q3 revenue?")
+> ```
+> **Common pitfall:** RAG quality is bottlenecked by *retrieval* quality, not model quality — if the wrong chunks are retrieved, the model will confidently answer from the wrong context. This is why Modules 13–14 (loaders, splitting) matter as much as the LLM call itself.
 
 ---
 
-## 10. Module: Callbacks & Observability
+# 13. Document Loaders
 
-### Concept
+### Module 11
 
-**Callbacks** are hooks that fire at defined points during execution — when a chain starts, when a tool is called, when an LLM streams a token, when an error occurs. They're how you plug in logging, token-usage tracking, streaming to a UI, or tracing without modifying the chain's core logic. **LangSmith** (LangChain's companion observability platform) builds on this callback system to give you full execution traces: every prompt sent, every tool call, every intermediate output, with latency and cost breakdowns.
+Before building RAG systems, documents need to be loaded into LangChain.
 
-### Why it matters
+### Topics
 
-LLM applications fail in ways traditional software doesn't — not with a stack trace, but with a subtly wrong answer, a tool called with malformed arguments, or a retrieval that silently returned the wrong chunks. Without tracing, debugging these failures means guessing. With tracing, you can see the exact prompt the model received and the exact output it produced at every step, which turns "the agent is being weird" into a concrete, fixable bug.
+* Document loaders
+* `Document`
+* Text files
+* `TextLoader`
+* CSV files
+* `CSVLoader`
+* Web pages
+* `WebBaseLoader`
+* Lazy loading
+* `lazy_load()`
+* Unstructured document loading
 
-### Common pitfalls
+### Important Idea
 
-- **Adding observability only after something breaks in production.** Instrument from the start — it's much cheaper than reconstructing what happened after the fact.
-- **Logging full prompts/outputs without considering PII or secrets** ending up in your trace store.
-- **Treating callbacks as only for debugging.** They're also the right mechanism for legitimate production needs like usage-based billing, rate limiting, and content moderation hooks.
+Different data sources require different loaders.
 
-### Mini-exercise
-
-```python
-from langchain_core.callbacks import BaseCallbackHandler
-
-class SimpleLogger(BaseCallbackHandler):
-    def on_llm_start(self, serialized, prompts, **kwargs):
-        print(f"--> Sending prompt: {prompts[0][:80]}...")
-
-    def on_llm_end(self, response, **kwargs):
-        print(f"<-- Got response of length {len(response.generations[0][0].text)}")
-
-from langchain.chat_models import init_chat_model
-model = init_chat_model("gpt-4o-mini", model_provider="openai")
-model.invoke("Say hello in five languages.", config={"callbacks": [SimpleLogger()]})
+```text
+Text File  → TextLoader
+CSV        → CSVLoader
+Web Page   → WebBaseLoader
+Documents  → Unstructured Loaders
 ```
 
-**References**
-- Callbacks conceptual guide — https://python.langchain.com/docs/concepts/callbacks/
-- LangSmith documentation (tracing, evaluation, monitoring) — https://docs.smith.langchain.com/
-- "Debugging LLM apps without losing your mind" — LangChain blog on observability practices — https://blog.langchain.dev/
+### Goal
+
+Understand how external data is brought into LangChain before processing and retrieval.
+
+> 📘 **Deep Dive — Why `lazy_load()` matters**
+> `.load()` reads the entire source into memory as a list of `Document` objects immediately. `.lazy_load()` returns a generator that yields documents one at a time — for a folder with thousands of files or a huge CSV, this avoids loading everything into RAM at once.
+> ```python
+> for doc in loader.lazy_load():
+>     process(doc)  # handle one Document at a time
+> ```
+> **Practical note:** every loader produces the same `Document` object (`page_content` + `metadata`), regardless of source type — this uniform shape is what lets the same splitting/embedding pipeline (Module 12) work no matter where the data came from.
 
 ---
 
-## 11. Integration Ecosystem
+# 14. Document Splitting
 
-LangChain's core value beyond composability is its **integrations directory** — hundreds of pre-built connectors so you don't hand-roll an API client for every model provider or data store. A few of the ones worth knowing well:
+### Module 12
 
-### Model Providers
-- **OpenAI** (`langchain-openai`) — chat, embeddings, and image models via a standardized wrapper around the OpenAI SDK.
-- **Hugging Face** (`langchain-huggingface`) — run open-weight models locally via `transformers`/`pipeline`, or call hosted models through the Hugging Face Inference API. Useful for learning how self-hosted inference differs from managed APIs (latency, cost, and control trade-offs).
-- **Anthropic, Google, Cohere, Mistral, Groq, Ollama** and dozens more, each following the same `init_chat_model` pattern.
+Large documents cannot always be embedded and retrieved as one large piece.
 
-### Vector Stores
-- **Chroma** (`langchain-chroma`) — a lightweight, local-first vector store, ideal for learning and prototyping since it needs no external infrastructure.
-- **Pinecone** (`langchain-pinecone`) — a managed, cloud-hosted vector database built for production scale and high-throughput similarity search.
-- **Weaviate** (`langchain-weaviate`) — an open-source vector database with built-in hybrid search (combining keyword and vector search) and a GraphQL-style query interface — a good one to study specifically for understanding hybrid retrieval.
+Document splitting breaks documents into meaningful chunks.
 
-### Why study the ecosystem deliberately
+### Topics
 
-Each integration exposes provider-specific parameters beyond the common interface (Pinecone's namespaces, Weaviate's hybrid `alpha` parameter, Chroma's persistence directory). Treating every vector store as interchangeable will work for a demo, but production retrieval quality often comes from using a store's specific features well — which means reading past the "quickstart" section of each integration's docs.
+* Why documents need to be split
+* Chunk size
+* Chunk overlap
+* Token-based splitting
+* Character-based splitting
+* `CharacterTextSplitter`
+* `TokenTextSplitter`
+* `RecursiveCharacterTextSplitter`
 
-**References**
-- Full integrations directory (providers, vector stores, tools, retrievers) — https://python.langchain.com/docs/integrations/providers/
-- Chroma docs — https://docs.trychroma.com/
-- Pinecone docs — https://docs.pinecone.io/
-- Weaviate docs (hybrid search concepts especially) — https://weaviate.io/developers/weaviate
-- Hugging Face + LangChain integration guide — https://huggingface.co/docs/hub/en/langchain
+### Recursive Character Splitting
 
----
+Understand why `RecursiveCharacterTextSplitter` is commonly useful for general text because it attempts to preserve related text while creating smaller chunks.
 
-## 12. Advanced Patterns
+### Document-Aware Splitting
 
-### Retrieval-Augmented Generation (RAG) — implementation strategies
+Different document formats require different strategies.
 
-RAG grounds model responses in retrieved documents rather than relying purely on parametric (trained-in) knowledge. A naive RAG pipeline is: embed the query → retrieve top-*k* chunks → stuff them into the prompt → generate. That naive version works for demos and struggles in practice. More robust strategies worth learning, roughly in order of complexity:
+#### Markdown
 
-- **Query rewriting/expansion** — have the model reformulate a vague user query into one or more better search queries before retrieval.
-- **Hybrid search** — combine keyword (BM25) and vector search, then merge/re-rank results, to catch exact matches vector search alone would miss.
-- **Re-ranking** — retrieve a larger candidate set cheaply, then use a more expensive cross-encoder model to re-rank and keep only the best few before generation.
-- **Agentic RAG** — instead of a single fixed retrieval step, let the agent decide *whether* to retrieve, *what* to search for, and *whether the results are sufficient* before answering, potentially issuing multiple retrieval rounds.
-- **Self-correction / grading** — have a step that evaluates whether the retrieved context actually supports an answer before generating one, falling back to "I don't know" or a broader search rather than hallucinating.
+* `MarkdownHeaderTextSplitter`
+* Splitting based on Markdown headers
+* Combining header splitting with recursive splitting
 
-Common pitfall across all of these: measuring RAG quality only by "does the answer look right" instead of building even a small labeled evaluation set. RAG systems degrade silently — a chunking or embedding change can quietly hurt precision without any error being thrown.
+#### JSON
 
-### Building custom agents
+* JSON-aware splitting
+* `.split_json()`
+* Handling nested key-value information
 
-Beyond `create_agent`, you'll eventually want to build custom agent architectures directly in LangGraph — multi-agent supervisor patterns (one agent routes to specialized sub-agents), plan-and-execute patterns (separate planning and execution steps), or reflection loops (the agent critiques and revises its own output). The key skill here is state design: deciding exactly what information needs to persist in the graph's state object between nodes, and keeping that state as small and well-typed as possible.
+#### HTML
 
-### Multi-modal chains
+* `HTMLHeaderTextSplitter`
+* Splitting based on HTML structure
 
-Modern chat models increasingly accept images, and some accept audio, alongside text. A multi-modal chain typically means constructing a `HumanMessage` with a content list mixing `{"type": "text", ...}` and `{"type": "image_url", ...}` blocks, then routing the model's output through the same chain/parser machinery as any text-only chain. The main pitfall: not every downstream integration (vector stores, memory summarizers) is multi-modal-aware, so you often need a separate text-extraction step (captioning, OCR) before an image can participate in retrieval.
+#### Code
 
-### Production deployment considerations
+* `Language`
+* Language-aware recursive splitting
+* Splitting programming code according to language structure
 
-Moving from a notebook to production means confronting a different set of problems than "does the chain work":
+### Goal
 
-- **Latency and streaming** — stream tokens to the client rather than waiting for a full generation, especially for agents that may take multiple tool-call rounds.
-- **Cost control** — cache repeated calls, cap agent iteration counts, and choose smaller/cheaper models for sub-tasks that don't need a frontier model.
-- **Durability** — long-running agents should be able to survive a process restart mid-task; this is precisely what LangGraph's checkpointing/persistence is for.
-- **Human-in-the-loop** — high-stakes or irreversible actions (sending an email, executing a financial transaction) should pause for explicit approval, a first-class pattern in LangGraph rather than something bolted on.
-- **Evaluation as a first-class practice** — treat prompt and chain changes like code changes: run them against a regression test set (LangSmith supports this natively) before shipping.
+Understand that **chunking strategy directly affects the quality of retrieval** in RAG.
 
-**References**
-- RAG conceptual guide (official) — https://python.langchain.com/docs/concepts/rag/
-- "Your RAG Is Lying to You: 7 Failure Modes" (practitioner field guide to RAG pitfalls) — https://www.teacherandtask.com/blog/
-- Multi-agent architectures in LangGraph — https://langchain-ai.github.io/langgraph/concepts/multi_agent/
-- Human-in-the-loop guide — https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/
-- LangGraph deployment / production guide — https://langchain-ai.github.io/langgraph/cloud/
-- Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" (the original RAG paper) — https://arxiv.org/abs/2005.11401
-
----
-
-## 13. Practical Learning Exercises
-
-Small, focused mini-projects — each one exercises a single concept from this README in isolation before you try combining them.
-
-1. **Provider swap drill.** Write one chain using `init_chat_model`, then run it against three different providers by changing only the model string. Note differences in latency, output style, and cost.
-2. **Prompt A/B test.** Take one task (e.g., summarization) and write two different prompt templates for it. Run both against the same 10 inputs and manually score which produces better summaries. This builds the habit of treating prompts as testable artifacts.
-3. **Parallel vs. sequential timing.** Build the same two-step chain (summarize + classify) once sequentially and once with `RunnableParallel`. Measure and compare wall-clock latency.
-4. **Tool docstring stress test.** Give an agent a tool with a deliberately vague docstring, observe how often it's misused, then rewrite the docstring and re-run. This makes the "tool descriptions are prompts" lesson concrete.
-5. **Memory strategy comparison.** Implement the same multi-turn conversation three ways — full buffer, windowed (last 3 turns), and summarized — and compare token usage and response quality on a 15-turn conversation.
-6. **Chunking experiment.** Take one long document, split it three different ways (small/no-overlap, medium/some-overlap, large/heavy-overlap), build a retriever for each, and compare retrieval quality on the same 5 test questions.
-7. **Hybrid vs. pure vector search.** Using Weaviate (or a manual BM25 + vector merge), compare retrieval results for a query containing an exact product code or acronym against pure semantic search.
-8. **Minimal RAG pipeline.** Load 3–5 short documents, chunk them, embed and index with Chroma, build a retriever, and wire it into a chain that answers questions with citations back to the source document.
-9. **Trace-driven debugging.** Deliberately introduce a bug into an agent (e.g., a tool that occasionally returns malformed data) and use callback logs (or LangSmith) to locate the failure instead of reading code top-to-bottom.
-10. **Human-in-the-loop gate.** Build a simple agent with one "destructive" tool (e.g., "delete_file") and add an interrupt step that requires explicit confirmation before that specific tool executes.
+> 📘 **Deep Dive — Picking `chunk_size` and `chunk_overlap`**
+> ```python
+> from langchain_text_splitters import RecursiveCharacterTextSplitter
+>
+> splitter = RecursiveCharacterTextSplitter(
+>     chunk_size=1000,     # characters (or tokens, if using a token-aware splitter)
+>     chunk_overlap=150,   # ~15% overlap keeps context across chunk boundaries
+> )
+> chunks = splitter.split_documents(documents)
+> ```
+> **Starting guidance:**
+> * Smaller chunks (300–500) → more precise retrieval, but risk losing surrounding context.
+> * Larger chunks (1000–1500) → more context per chunk, but retrieval becomes less precise and can pull in irrelevant text.
+> * `chunk_overlap` (typically 10–20% of `chunk_size`) prevents a sentence or idea from being cut in half exactly at a chunk boundary.
+> There's no universally "correct" value — this is worth experimenting with against your own retrieval evaluation (see *Extra Learning → Retrieval Quality*).
 
 ---
 
-## 14. Curated Reference Library
+# 15. Agents & Tools
 
-A running list of the highest-signal resources for going deeper, organized by type.
+### Module 13
 
-### Official documentation
-- LangChain Python docs — https://python.langchain.com/
-- LangChain conceptual guides (the best starting point for *any* topic in this README) — https://python.langchain.com/docs/concepts/
-- LangGraph docs — https://langchain-ai.github.io/langgraph/
-- LangSmith docs — https://docs.smith.langchain.com/
-- Full Python API reference — https://python.langchain.com/api_reference/
+Chains are useful when the workflow is known in advance.
 
-### Structured courses
-- LangChain Academy — free, structured course on LangGraph fundamentals — https://academy.langchain.com/
-- DeepLearning.AI × LangChain short courses ("LangChain for LLM Application Development," "Functions, Tools and Agents with LangChain") — https://www.deeplearning.ai/short-courses/
+Agents become useful when the model needs to decide **what action should happen next**.
 
-### GitHub examples & community notebooks
-- `langchain-ai/langchain` — official repo, `/cookbook` and `/templates` directories are full of runnable examples — https://github.com/langchain-ai/langchain
-- `langchain-ai/langgraph` — official LangGraph repo with example graphs — https://github.com/langchain-ai/langgraph
-- `FullStackRetrieval-com/RetrievalTutorials` — Greg Kamradt's widely-cited notebooks on chunking and retrieval strategies — https://github.com/FullStackRetrieval-com/RetrievalTutorials
+### Topics
 
-### Research papers worth reading
-- Yao et al., "ReAct: Synergizing Reasoning and Acting in Language Models" — https://arxiv.org/abs/2210.03629
-- Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks" — https://arxiv.org/abs/2005.11401
-- Packer et al., "MemGPT: Towards LLMs as Operating Systems" — https://arxiv.org/abs/2310.08560
-- Shinn et al., "Reflexion: Language Agents with Verbal Reinforcement Learning" — https://arxiv.org/abs/2303.11366
+* Agents
+* Tools
+* Tool calling
+* Agent workflow
+* Tool descriptions
+* Tool docstrings
+* Tool arguments
+* `args_schema`
+* Pydantic schemas for tools
+* `create_tool_calling_agent`
+* `AgentExecutor`
+* Structured chat agents
+* `create_structured_chat_agent`
 
-### Recognized practitioners & video resources
-* **Computer Lab Tamil** — Tamil-language video tutorials and practical walkthroughs for learning LangChain concepts — https://www.youtube.com/watch?v=I1uWjjhyGMI&list=PLSXooZlk4CqoI_mIqFTHiD9NSuh44kbUg&index=16 
+### Tool Calling
 
-- Harrison Chase (LangChain founder) — talks and blog posts on framework design decisions — https://blog.langchain.dev/
-- LangChain's official YouTube channel — walkthroughs of new features as they ship — https://www.youtube.com/@LangChain
-- Aurelio AI's LangChain learning hub — deep, code-first tutorials on LCEL and agent design — https://www.aurelio.ai/learn
+A tool gives the model access to an external function.
+
+```text
+User
+ ↓
+Agent
+ ↓
+Decide whether a tool is required
+ ↓
+Tool
+ ↓
+Tool Result
+ ↓
+Agent
+ ↓
+Final Answer
+```
+
+### Important Concept
+
+The tool's **docstring is extremely important** because it describes the tool to the model.
+
+For complex tools, `args_schema` can be used to describe and validate the expected arguments.
+
+### Tool Calling vs Structured Chat
+
+The module also compares:
+
+* `create_tool_calling_agent`
+* `create_structured_chat_agent`
+
+The structured-chat approach is mainly useful when the model does not support native tool calling.
+
+### Goal
+
+Understand how an LLM changes from simply generating answers to **selecting and using external tools**.
+
+> 📘 **Deep Dive — Defining a tool with `@tool`**
+> ```python
+> from langchain_core.tools import tool
+>
+> @tool
+> def get_weather(city: str) -> str:
+>     """Get the current weather for a given city name."""
+>     return f"It is sunny in {city}."
+> ```
+> The docstring (`"""Get the current weather..."""`) is not just documentation for humans — it's sent to the model as part of the tool's definition, and it's the *primary signal* the model uses to decide when to call this tool. A vague docstring like `"""Weather tool."""` leads to unreliable tool selection; a specific one describing exactly what the tool does and what input it expects leads to much more consistent agent behavior.
 
 ---
 
-*This README is a living document. As LangChain and LangGraph continue to evolve, revisit the official conceptual guides linked throughout — they are the ground truth this repository is built to help you understand, not replace.*
+# 16. Advanced Agentic RAG
+
+### Module 14
+
+This module combines the concepts learned throughout the repository.
+
+Instead of using RAG as a fixed pipeline, the retrieval system can become a **tool available to an agent**.
+
+### Learning Flow
+
+```text
+Documents
+    ↓
+Document Loader
+    ↓
+Document Splitting
+    ↓
+Embeddings
+    ↓
+Vector Store
+    ↓
+Retriever
+    ↓
+RAG
+    ↓
+Convert RAG into a Tool
+    ↓
+Agent
+    ↓
+Agent decides when to use the Tool
+    ↓
+Retrieve Information
+    ↓
+Generate Final Answer
+```
+
+### Topics
+
+* Advanced agent flow
+* Vector stores
+* Chroma
+* Retriever
+* RAG
+* Runnable RAG
+* Converting RAG into a tool
+* Tool descriptions
+* Agent + RAG
+* Multiple tools
+* Tool execution
+* Agent decision making
+* AgentExecutor
+* SQL agents
+* Database tools
+* Web search tools
+* SQLDatabaseToolkit
+
+### Core Concept
+
+The important transition is:
+
+```text
+Traditional RAG
+
+Question
+   ↓
+Retrieve
+   ↓
+Generate
+```
+
+to:
+
+```text
+Agentic RAG
+
+Question
+   ↓
+Agent
+   ↓
+Should I retrieve?
+   ↓
+Which tool should I use?
+   ↓
+Retrieve / Search / Database
+   ↓
+Observe result
+   ↓
+Continue or answer
+```
+
+### Goal
+
+Understand how RAG, tools, and agents can be combined to create more flexible LLM applications.
+
+> 📘 **Deep Dive — Turning a retriever into a tool**
+> ```python
+> from langchain.tools.retriever import create_retriever_tool
+>
+> retriever_tool = create_retriever_tool(
+>     retriever,
+>     name="search_company_docs",
+>     description="Search internal company documents for policy and product information.",
+> )
+> tools = [retriever_tool, get_weather, sql_tool]
+> agent_executor = AgentExecutor(agent=agent, tools=tools)
+> ```
+> **The core insight:** in fixed RAG (Module 10), retrieval happens on *every* query whether it's needed or not. In agentic RAG, the agent first reasons about whether retrieval is even necessary, and if there are multiple tools (retriever, SQL, web search), it chooses the *right* one for the question — this is the ReAct-style "reason → act → observe → repeat" loop.
+
+---
+
+# Extra Learning
+
+The following topics appear in the notebooks or naturally extend the concepts being practiced, but they are better treated as **additional learning** rather than part of the main progression.
+
+## 1. SQL / Database Agents
+
+Explore how agents can interact with databases using:
+
+* `create_sql_agent`
+* `SQLDatabase`
+* `SQLDatabaseToolkit`
+* Database tools
+* Natural language → SQL
+* SQL execution through agents
+
+Learning flow:
+
+```text
+User Question
+      ↓
+Agent
+      ↓
+Understand Question
+      ↓
+Generate SQL
+      ↓
+Database
+      ↓
+Result
+      ↓
+Agent
+      ↓
+Answer
+```
+
+> 📘 **Deep Dive:** Always run SQL agents against a **read-only** database connection or user role while learning. An agent that can generate arbitrary SQL can also generate destructive statements (`DROP`, `DELETE`) if the question is ambiguous or the prompt is manipulated — this is a well-known risk with natural-language-to-SQL systems.
+
+---
+
+## 2. Web Search Tools
+
+Learn how external web-search functionality can be exposed to an agent as a tool.
+
+Topics:
+
+* Search tools
+* Tool descriptions
+* Agent-selected search
+* Search results as tool output
+* Agent + web search
+
+---
+
+## 3. Agentic RAG
+
+Go deeper into the difference between:
+
+* Fixed RAG
+* RAG as a tool
+* Agentic RAG
+* Multiple retrieval steps
+* Tool selection
+* Retrieval decisions
+
+---
+
+## 4. Streaming
+
+Go deeper into:
+
+* `.stream()`
+* `.astream()`
+* `.astream_events()`
+* Token streaming
+* Event streaming
+* Streaming agent responses
+* Streaming through APIs
+* Frontend live updates
+
+---
+
+## 5. Async LangChain
+
+Explore:
+
+* `async`
+* `await`
+* `.ainvoke()`
+* `.abatch()`
+* `.astream()`
+* `asyncio.gather()`
+* Concurrent model calls
+
+> 📘 **Deep Dive:** `asyncio.gather()` combined with `.ainvoke()` is how you fire off several independent LLM calls concurrently instead of sequentially — e.g. summarizing 10 documents at once instead of one after another. This is different from `.abatch()`, which batches a *single* chain over multiple inputs; `asyncio.gather()` is more general and can run entirely different chains/tasks concurrently.
+
+---
+
+## 6. Retrieval Quality
+
+After understanding basic RAG, continue with:
+
+* Similarity search
+* `k`
+* Metadata filtering
+* MMR
+* Hybrid search
+* Retrieval evaluation
+* Chunk-size experiments
+* Chunk-overlap experiments
+* Embedding model comparison
+
+> 📘 **Deep Dive:** MMR (Maximal Marginal Relevance) is worth learning early here — plain similarity search can return several near-duplicate chunks that all say the same thing, while MMR explicitly balances relevance against diversity so the retrieved context covers more distinct information for the same `k`.
+
+---
+
+## 7. Embeddings
+
+Study embeddings more deeply:
+
+```text
+Text
+ ↓
+Embedding Model
+ ↓
+Vector
+ ↓
+Vector Database
+ ↓
+Similarity Search
+```
+
+Important areas:
+
+* Embedding dimensions
+* Cosine similarity
+* Semantic similarity
+* Query embeddings
+* Document embeddings
+* Embedding model selection
+
+---
+
+## 8. Vector Databases
+
+After learning the basic RAG implementation, explore different vector stores and compare their approaches.
+
+Topics:
+
+* FAISS
+* Chroma
+* Pinecone
+* Weaviate
+* Similarity search
+* Metadata filtering
+* Persistence
+* Retrieval configuration
+
+> 📘 **Deep Dive:** FAISS and Chroma are the easiest to start with because they run locally with no external account — good for learning. Pinecone and Weaviate are managed/hosted services better suited once you need production-scale persistence, multi-user access, or horizontal scaling beyond what fits comfortably on one machine.
+
+---
+
+# Recommended Learning Sequence
+
+For the best understanding, follow the notebooks in this order:
+
+```text
+01  LangChain Basics
+        ↓
+02  Prompt Templates
+        ↓
+03  Model Parameters
+        ↓
+04  Runnables
+        ↓
+05  Output Parsers
+        ↓
+06  Chain Execution Methods
+        ↓
+07  LCEL
+        ↓
+08  Conversation Memory
+        ↓
+09  Memory Optimization
+        ↓
+10  Sequential & Conditional Chains
+        ↓
+11  Frontend & Streaming
+        ↓
+12  RAG
+        ↓
+13  Document Loaders
+        ↓
+14  Document Splitting
+        ↓
+15  Agents & Tools
+        ↓
+16  Advanced Agentic RAG
+        ↓
+17  Extra Learning
+```
+
+---
+
+# The Big Picture
+
+The concepts in this repository can ultimately be connected into one larger mental model:
+
+```text
+                         LANGCHAIN
+                             │
+             ┌───────────────┼───────────────┐
+             │               │               │
+           Models          Prompts         Tools
+             │               │               │
+             └───────────────┼───────────────┘
+                             │
+                         Runnables
+                             │
+                            LCEL
+                             │
+                    ┌────────┴────────┐
+                    │                 │
+                  Chains            Agents
+                    │                 │
+                    │                 ├── Tools
+                    │                 ├── RAG
+                    │                 ├── Web Search
+                    │                 └── Databases
+                    │
+             Conversation Memory
+                    │
+                    └──────────────┐
+                                   │
+                                  RAG
+                                   │
+                    ┌──────────────┼──────────────┐
+                    │              │              │
+                Documents      Splitting      Embeddings
+                    │              │              │
+                    └──────────────┼──────────────┘
+                                   │
+                             Vector Store
+                                   │
+                               Retriever
+                                   │
+                                  RAG
+                                   │
+                                Agent
+                                   │
+                          Agentic Applications
+```
+
+---
+
+# Final Learning Goal
+
+By completing this learning path, the main progression should be clear:
+
+```text
+LLM
+ ↓
+Prompt
+ ↓
+Runnable
+ ↓
+Chain
+ ↓
+LCEL
+ ↓
+Memory
+ ↓
+RAG
+ ↓
+Retriever
+ ↓
+Tool
+ ↓
+Agent
+ ↓
+Agentic RAG
+```
+
+The most important thing is not memorizing individual LangChain classes.
+
+The real objective is to understand **how information flows through an LLM application**, how each abstraction solves a specific problem, and how those abstractions can be combined to build increasingly capable systems.
+
+---
+
+> ℹ️ **Note on this document:** Sections marked with 📘 **Deep Dive** are supplementary learning notes (code snippets, comparison tables, trade-offs, and practical tips) added to reinforce the concepts already outlined above. They do not replace or alter any of the original module descriptions — all original content, structure, and headings remain exactly as originally written.
