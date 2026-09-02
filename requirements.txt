@@ -4,7 +4,7 @@ langchain-groq
 langchain
 load_dotenv
 langchain_core
-
+langchain-core
 # huggingface 
 langchain-huggingface
 
@@ -38,3 +38,6 @@ easyocr
 
 
 tiktoken
+
+langchain-classic
+agent_scratchpad
