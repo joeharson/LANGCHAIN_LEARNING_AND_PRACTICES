@@ -11,7 +11,6 @@ langchain-huggingface
 ## Langchain Community
 langchain-community
 
-
 sentence-transformers
 
 # Api connectivity
@@ -37,7 +36,6 @@ python-magic
 #tesseract
 #rapidocr_onnxruntime
 easyocr
-
 
 tiktoken
 
