@@ -5,10 +5,8 @@ langchain
 load_dotenv
 langchain_core
 langchain-core
-# huggingface 
 langchain-huggingface
-
-## Langchain Community
+langchain-classic
 langchain-community
 
 sentence-transformers
@@ -37,9 +35,9 @@ python-magic
 #rapidocr_onnxruntime
 easyocr
 
+# tokenized splitting of data
 tiktoken
 
-langchain-classic
 google-search-results
 serpapi
 ddgs
